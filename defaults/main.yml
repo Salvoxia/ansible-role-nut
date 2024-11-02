@@ -23,7 +23,6 @@ nut_users:
 #    instcmds:
 #      - test.panel.start
 #      - test.panel.stop
-    
 
 
 nut_ups: []
