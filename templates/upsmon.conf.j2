@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 {% for ups in nut_ups %}
-MONITOR {{ ups.name }}@{{ nut_host }} {{ nut_powervalue }} {{ nut_user }} {{ nut_password }} {{ nut_role }}
+MONITOR {{ ups.name }}@{{ ups.monitorhost|default('localhost', true) }} {{ ups.powervalue|default('1', true) }} {{ ups.monitoruser }} {% for user in nut_users %}{% if user.name == ups.monitoruser %}{{ user.password }} {{ user.role }}{% endif %}{% endfor %}
 {% endfor %}
 
 {% if nut_upsmon_notifycmd | length > 0 %}
