@@ -44,10 +44,10 @@ A full user configuration might look like this:
 ```yaml
 nut_users:
   - name: monitor
-    password: uNro<FQ.eav:fyc^.,>,b29/4Dts=9
+    password: Changeme
     role: secondary
   - name: admin
-    password: test
+    password: uNro<FQ.eav:fyc^.,>,b29/4Dts=9
     role: primary
     actions:
       - fsd
@@ -86,12 +86,6 @@ nut_ups:
     device: auto
 ``` 
 
-The following additional attributes are mandatory for `nut_mode = netserver` or `nut_mode = standalone`:
-
-  - `device` is device where the UPS is listening (typically an USB port or
-a serial device). Is translated to the `port` directive in [`ups.conf`](https://networkupstools.org/docs/man/ups.conf.html).
-
-
 The full configuration for `nut_ups` with all possible attributes looks like this:
 ```yaml
 nut_ups:
@@ -128,13 +122,13 @@ All these variables are optional:
 | `nut_enable_service` | Flag indicating whether to start the services defined in `nut_services` after configuration. Default: `true` |
 | `nut_upssched_cmdscript_content` | Contents of a custom `upssched-cmd` script. |
 | `nut_upssched_cmdscript` | Path on the Ansible host to a custom `upssched-cmd` script. Sets the `CMDSCRIPT` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>If `nut_upssched_cmdscript_content` is not empty, the contents of that variable will be stored under that path. |
-|`nut_upssched_pipefn`| Sets the `PIPEFN` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Default: `/run/nut/upssched/upssched.pipe`|
-|`nut_upssched_lockfn`| Sets the `LOCKFN` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Default: `/run/nut/upssched/upssched.lock`|
-|`nut_upssched_at_commands`| Define `AT` directives for [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Refer to [defaults/main.yml](defaults/main.yml) for an example. |
-|`nut_upsmon_notify`| Define custom `NOTIFYMSG` and `NOTIFYFLAG` directives for [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>Refer to [defaults/main.yml](defaults/main.yml) for an example. |
-|`nut_upsmon_notifycmd`| Path to a custom notification script. Sets the `NOTIFYCMD` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html). |
+| `nut_upssched_pipefn` | Sets the `PIPEFN` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Default: `/run/nut/upssched/upssched.pipe`|
+| `nut_upssched_lockfn` | Sets the `LOCKFN` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Default: `/run/nut/upssched/upssched.lock`|
+| `nut_upssched_at_commands` | Define `AT` directives for [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Refer to [defaults/main.yml](defaults/main.yml) for an example. |
+| `nut_upsmon_notify` | Define custom `NOTIFYMSG` and `NOTIFYFLAG` directives for [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>Refer to [defaults/main.yml](defaults/main.yml) for an example. |
+| `nut_upsmon_notifycmd` | Path to a custom notification script. Sets the `NOTIFYCMD` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html). |
 | `nut_upsmon_notifycmd_content` | Contents of a custom upsmon notification script. |
-|`nut_upsmon_notifycmd`| Path to a custom notification script. Sets the `NOTIFYCMD` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>If `nut_upsmon_notifycmd_content` is not empty, the contents of that variable will be stored under that path. |
+| `nut_upsmon_notifycmd` | Path to a custom notification script. Sets the `NOTIFYCMD` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>If `nut_upsmon_notifycmd_content` is not empty, the contents of that variable will be stored under that path. |
 | `nut_ups_extra` | Additional content to append to the `ups.conf` file |
 | `nut_upsd_extra` | Additional content to append to the `upsd.conf` file |
 | `nut_upsmon_extra` | Additional content to append to the `upsmon.conf` file |
@@ -151,10 +145,10 @@ All these variables are optional:
         role: secondary
     nut_ups:
       - name: riello
+        monitoruser: monitor
         driver: riello_usb
         device: /dev/ups
         description: iPlug 800
-        monitoruser: monitor
 ```
 
 For more examples, please see `tests/test.yml`.
