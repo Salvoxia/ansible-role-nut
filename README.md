@@ -1,5 +1,5 @@
-Ansible Role: NUT
-=================
+# Ansible Role: NUT
+
 [![Build Status](https://github.com/salvoxia/ansible-role-nut/workflows/Release/badge.svg)](https://github.com/simoncaron/ansible-role-nut/actions?query=workflow%3Release)
 [![Ansible Galaxy Downloads](https://img.shields.io/badge/dynamic/json?color=blueviolet&label=Galaxy%20Downloads&query=%24.download_count&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F39509%2F%3Fformat%3Djson)](https://galaxy.ansible.com/ui/standalone/roles/salvoxia/nut/)
 
@@ -57,13 +57,62 @@ nut_users:
 ```
 
 Explanation for all possible attributes:
-| Attribute   |  Description   |
-| :------------------- | :------------ |
-| `name`      | Name for the NUT user<br>__Mandatory__ |
-| `password` | The user's password<br>__Mandatory__ |
-| `role` | Either the `user type` filed of the MONITOR directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html) and/or the `upsmon` directive in [`upsd.users`](https://networkupstools.org/docs/man/upsd.users.html). Allowe vlaues are `primary` and `secondary`<br>__Mandatory__ |
-| `actions` | Used to set allowed actions for the user in [`upsd.users`](https://networkupstools.org/docs/man/upsd.users.html)<br>Only effective effect if `nut_mode` is either `netserver` or `standalone`<br>__Optional__ |
-| `instcmds` | Used to set allowed instant commands for the user in [`upsd.users`](https://networkupstools.org/docs/man/upsd.users.html)<br>Only effective effect if `nut_mode` is either `netserver` or `standalone`<br>__Optional__ |
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td> 
+      
+`name`
+    </td>
+    <td>
+
+Name for the NUT user<br>__Mandatory__
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`password`
+    </td>
+    <td>
+The user's password<br>__Mandatory__
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`role`
+    </td>
+    <td>
+    
+Either the `user type` filed of the MONITOR directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html) and/or the `upsmon` directive in [`upsd.users`](https://networkupstools.org/docs/man/upsd.users.html).<br>Allowed vlaues are `primary` and `secondary`<br>__Mandatory__
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`actions`
+    </td>
+    <td>
+    
+Used to set allowed actions for the user in [`upsd.users`](https://networkupstools.org/docs/man/upsd.users.html)<br>Only effective effect if `nut_mode` is either `netserver` or `standalone`<br>__Optional__
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`instcmds`
+    </td>
+    <td>
+    
+Used to set allowed instant commands for the user in [`upsd.users`](https://networkupstools.org/docs/man/upsd.users.html)<br>Only effective effect if `nut_mode` is either `netserver` or `standalone`<br>__Optional__
+    </td>
+  </tr>
+</table>
 
 
 ### `nut_ups`
@@ -100,38 +149,257 @@ nut_ups:
       maxretry = 10
       retrydelay = 1
 ```
-Explanation for all possible attributes
-| Attribute   |  Description   |
-| :------------------- | :------------ |
-| `name`      | An arbitrary string that must identify univocally the UPS<br>__Mandatory__ |
-| `monitoruser` | The NUT user to use for monitoring this UPS. Must reference an existing user defined in [`nut_users`](#nut_users).<br>__Mandatory__ |
-| `driver` | Depends on your hardware and must be one of the [available NUT driver](http://networkupstools.org/stable-hcl.html). Be sure the NUT version installed on your server has that specific driver available<br>__Mandatory__ for `nut_mode` set to `netserver` or `standalone`|
-| `device` | Port where the UPS is listening (typically an USB port or a serial device). It is translated to the `port` directive in [`ups.conf`](https://networkupstools.org/docs/man/ups.conf.html)<br>__Mandatory__ for `nut_mode` set to `netserver` or `standalone`|
-| `description` | An arbitrary string used for debugging and reporting purposes<br>__Optional__ |
-| `monitorhost` | The host that UPS can be monitored with. Is used as the host in the `MONITOR` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>__Optional__, default: `localhost` |
-| `powervalue` | The number of power supplies that the UPS feeds on this system. Is used as `powervalue` in the `MONITOR` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>__Optional__, default: `1` |
-| `extra` | Optional multiline text to be inserted verbatim in the global section of the relevant configuration file<br>__Optional__ |
+Explanation for all possible attributes:
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td> 
+      
+`name`
+    </td>
+    <td>
+
+An arbitrary string that must identify univocally the UPS<br>__Mandatory__
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`monitoruser`
+    </td>
+    <td>
+The NUT user to use for monitoring this UPS. Must reference an existing user defined in [`nut_users`](#nut_users).<br>__Mandatory__
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`driver`
+    </td>
+    <td>
+    
+Depends on your hardware and must be one of the [available NUT driver](http://networkupstools.org/stable-hcl.html). Be sure the NUT version installed on your server has that specific driver available<br>__Mandatory__ for `nut_mode` set to `netserver` or `standalone`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`device`
+    </td>
+    <td>
+    
+Port where the UPS is listening (typically an USB port or a serial device). It is translated to the `port` directive in [`ups.conf`](https://networkupstools.org/docs/man/ups.conf.html)<br>__Mandatory__ for `nut_mode` set to `netserver` or `standalone`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`description`
+    </td>
+    <td>
+    
+An arbitrary string used for debugging and reporting purposes<br>__Optional__
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`monitorhost`
+    </td>
+    <td>
+    
+The host that UPS can be monitored with. Is used as the host in the `MONITOR` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>__Optional__, default: `localhost`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`powervalue`
+    </td>
+    <td>
+    
+The number of power supplies that the UPS feeds on this system. Is used as `powervalue` in the `MONITOR` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>__Optional__, default: `1`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`powervalue`
+    </td>
+    <td>
+    
+`extra` | Optional multiline text to be inserted verbatim in the global section of the relevant configuration file<br>__Optional__
+    </td>
+  </tr>
+</table>
 
 
 ### Misc Variables
 
 All these variables are optional:
-| Variable   |  Description   |
-| :------------------- | :------------ |
-| `nut_services`      | List of service names to enable<br>Default: `nut-driver-enumerator`, `nut-monitor`, `nut-server` |
-| `nut_enable_service` | Flag indicating whether to start the services defined in `nut_services` after configuration. Default: `true` |
-| `nut_upssched_cmdscript_content` | Contents of a custom `upssched-cmd` script. |
-| `nut_upssched_cmdscript` | Path on the Ansible host to a custom `upssched-cmd` script. Sets the `CMDSCRIPT` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>If `nut_upssched_cmdscript_content` is not empty, the contents of that variable will be stored under that path. |
-| `nut_upssched_pipefn` | Sets the `PIPEFN` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Default: `/run/nut/upssched/upssched.pipe`|
-| `nut_upssched_lockfn` | Sets the `LOCKFN` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Default: `/run/nut/upssched/upssched.lock`|
-| `nut_upssched_at_commands` | Define `AT` directives for [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Refer to [defaults/main.yml](defaults/main.yml) for an example. |
-| `nut_upsmon_notify` | Define custom `NOTIFYMSG` and `NOTIFYFLAG` directives for [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>Refer to [defaults/main.yml](defaults/main.yml) for an example. |
-| `nut_upsmon_notifycmd` | Path to a custom notification script. Sets the `NOTIFYCMD` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html). |
-| `nut_upsmon_notifycmd_content` | Contents of a custom upsmon notification script. |
-| `nut_upsmon_notifycmd` | Path to a custom notification script. Sets the `NOTIFYCMD` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>If `nut_upsmon_notifycmd_content` is not empty, the contents of that variable will be stored under that path. |
-| `nut_ups_extra` | Additional content to append to the `ups.conf` file |
-| `nut_upsd_extra` | Additional content to append to the `upsd.conf` file |
-| `nut_upsmon_extra` | Additional content to append to the `upsmon.conf` file |
+
+<table>
+  <tr>
+    <th>Variable</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_services`
+    </td>
+    <td>
+
+List of service names to enable<br>Default:
+```yaml
+nut_services:
+  - nut-driver-enumerator
+  - nut-monitor
+  - nut-server
+```
+  </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_enable_service`
+    </td>
+    <td>
+
+Flag indicating whether to start the services defined in `nut_services` after configuration.<br>Default: `true`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upssched_cmdscript_content`
+    </td>
+    <td>
+
+Contents of a custom `upssched-cmd` script.
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upssched_cmdscript`
+    </td>
+    <td>
+
+Path on the Ansible host to a custom `upssched-cmd` script. Sets the `CMDSCRIPT` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>If `nut_upssched_cmdscript_content` is not empty, the contents of that variable will be stored under this path.
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upssched_pipefn`
+    </td>
+    <td>
+
+Sets the `PIPEFN` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Default: `/run/nut/upssched/upssched.pipe`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upssched_lockfn`
+    </td>
+    <td>
+
+Sets the `LOCKFN` directive in [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Default: `/run/nut/upssched/upssched.lock`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upssched_at_commands`
+    </td>
+    <td>
+
+Define `AT` directives for [`upssched.conf`](https://networkupstools.org/docs/man/upssched.conf.html).<br>Example:
+```yaml
+nut_upssched_at_commands:
+  - notifytype: ONBATT
+    upsname: *
+    command: START-TIMER commbad 30
+```
+   </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upsmon_notify`
+    </td>
+    <td>
+
+Define custom `NOTIFYMSG` and `NOTIFYFLAG` directives for [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>Example:
+```yaml
+nut_upsmon_notify:
+  - name: ONLINE
+    msg: UPS %s on line power
+    flag: SYSLOG+WALL+EXEC
+  - name: ONBATT
+    msg: UPS %s on battery
+    flag: SYSLOG+WALL+EXEC
+```
+   </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upsmon_notifycmd_content`
+    </td>
+    <td>
+
+Contents of a custom upsmon notification script.
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upsmon_notifycmd`
+    </td>
+    <td>
+
+Path to a custom notification script. Sets the `NOTIFYCMD` directive in [`upsmon.conf`](https://networkupstools.org/docs/man/upsmon.conf.html).<br>If `nut_upsmon_notifycmd_content` is not empty, the contents of that variable will be stored under that path.
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_ups_extra`
+    </td>
+    <td>
+
+Additional content to append to the `ups.conf` file
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upsd_extra`
+    </td>
+    <td>
+
+Additional content to append to the `upsd.conf` file
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_upsmon_extra`
+    </td>
+    <td>
+
+Additional content to append to the `upsmon.conf` file
+    </td>
+  </tr>
+</table>
+
 
 ## Example Playbook
 
