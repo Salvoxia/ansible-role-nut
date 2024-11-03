@@ -1,0 +1,56 @@
+---
+- name: Verify variables for generating configuration
+  when: nut_managed_config is defined and nut_managed_config
+  block:
+    - name: Assert NUT mode
+      ansible.builtin.assert:
+        that: nut_mode in ['netclient', 'netserver', 'standalone']
+        fail_msg: "nut_mode must be either netclient, netserver or standalone!"
+
+    - name: Assert that at least one UPSs is defined
+      ansible.builtin.assert:
+        that: nut_ups | length > 0
+        fail_msg: "At least one UPS must be defined in nut_ups!"
+
+    - name: Assert that all UPSs have required attributes
+      ansible.builtin.assert:
+        that:
+          - item.name is defined and item.name | length > 0
+          - item.monitoruser is defined and item.monitoruser | length > 0
+        fail_msg: "All UPSs must have the following non-empty attributes: name, monitoruser"
+      with_items: "{{ nut_ups }}"
+
+    - name: Assert that all UPSs have required attributes for netserver and standalone configuration
+      ansible.builtin.assert:
+        that:
+          - item.driver is defined and item.driver | length > 0
+          - item.device is defined and item.device | length > 0
+        fail_msg: "All UPSs must have the following non-empty attributes when running in netserver or standalone mode: driver, device, description"
+      with_items: "{{ nut_ups }}"
+      when: nut_mode in ['netserver', 'standalone']
+
+    - name: Assert that at least one user is defined
+      ansible.builtin.assert:
+        that: "{{ nut_users | length > 0 }}"
+        fail_msg: "At least one user must be defined in nut_users!"
+
+    - name: Assert that at each user has the required attributes set for the selected NUT mode
+      ansible.builtin.assert:
+        that:
+          - item.name is defined and item.name | length > 0
+          - item.password is defined and item.password | length > 0
+          - item.role is defined
+          - item.role in ['primary', 'secondary']
+        fail_msg: "All users must have a non-empty name and password attribute, and role must be either primary or secondary!"
+      with_items: "{{ nut_users }}"
+
+    - name: Build list of user names
+      ansible.builtin.set_fact:
+        nut_user_names: "{{ nut_users | map(attribute='name') | flatten }}"
+
+    - name: Assert that at each UPS references an existing user
+      ansible.builtin.assert:
+        that:
+          - item.monitoruser in nut_user_names
+        fail_msg: "UPS {{ item.name }} references non-existing monitoruser {{ item.monitoruser }}! Defined users: {{ nut_user_names }}"
+      with_items: "{{ nut_ups }}"
