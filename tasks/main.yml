@@ -21,7 +21,7 @@
     dest: "/etc/nut/{{ item }}"
     owner: root
     group: nut
-    mode: 0640
+    mode: '0640'
   with_items:
     - nut.conf
     - upsmon.conf
@@ -35,7 +35,7 @@
     dest: "/etc/nut/{{ item }}"
     owner: root
     group: nut
-    mode: 0640
+    mode: '0640'
   with_items:
     - ups.conf
     - upsd.users
@@ -49,7 +49,7 @@
     content: "{{ nut_upsmon_notifycmd_content }}"
     owner: root
     group: nut
-    mode: 0770
+    mode: '0770'
   when: nut_upsmon_notifycmd_content | length > 0
 
 - name: Install custom upssched-cmd script.
@@ -58,7 +58,7 @@
     content: "{{ nut_upssched_cmdscript_content }}"
     owner: root
     group: nut
-    mode: 0770
+    mode: '0770'
   when: nut_upssched_cmdscript_content | length > 0
 
 - name: Create upssched folders
