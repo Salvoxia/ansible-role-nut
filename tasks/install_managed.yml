@@ -1,0 +1,5 @@
+---
+- name: Ensure NUT packages are installed.
+  ansible.builtin.package:
+    name: "{{ nut_packages }}"
+    state: present

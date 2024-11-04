@@ -2,6 +2,12 @@
 # Whether to start or not the NUT service after the configuration
 nut_enable_service: true
 
+# Indicates whether to install or remove NUT
+nut_state: present
+
+# Flag indicating whether to compile and install NUT from source instead of a package manager
+nut_install_from_source: false
+
 # If this is set to false, none of the following options will have any effect.
 # Any and all changes to /etc/nut/* will be your responsibility.
 nut_managed_config: true

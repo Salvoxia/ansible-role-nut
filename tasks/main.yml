@@ -10,64 +10,18 @@
     nut_packages: "{{ __nut_packages | list }}"
   when: nut_packages is not defined
 
-- name: Ensure NUT packages are installed.
-  ansible.builtin.package:
-    name: "{{ nut_packages }}"
-    state: present
+- name: Install NUT via package manager
+  ansible.builtin.include_tasks: install_managed.yml
+  when: nut_state == 'present' and not nut_install_from_source
 
-- name: Install common NUT configuration files.
-  ansible.builtin.template:
-    src: "{{ item }}.j2"
-    dest: "/etc/nut/{{ item }}"
-    owner: root
-    group: nut
-    mode: '0640'
-  with_items:
-    - nut.conf
-    - upsmon.conf
-    - upssched.conf
-  notify: Restart nut
-  when: nut_managed_config
+- name: Configure NUT
+  ansible.builtin.include_tasks: configure.yml
+  when: nut_state == 'present' and nut_managed_config
 
-- name: Install NUT configuration files.
-  ansible.builtin.template:
-    src: "{{ item }}.j2"
-    dest: "/etc/nut/{{ item }}"
-    owner: root
-    group: nut
-    mode: '0640'
-  with_items:
-    - ups.conf
-    - upsd.users
-    - upsd.conf
-  notify: Restart nut
-  when: nut_managed_config and 'nut-server' in nut_packages
+- name: Uninstall NUT via package manager
+  ansible.builtin.include_tasks: uninstall_managed.yml
+  when: nut_state == 'absent' and not nut_install_from_source
 
-- name: Install custom notifycmd script.
-  ansible.builtin.copy:
-    dest: "{{ nut_upsmon_notifycmd }}"
-    content: "{{ nut_upsmon_notifycmd_content }}"
-    owner: root
-    group: nut
-    mode: '0770'
-  when: nut_upsmon_notifycmd_content | length > 0
-
-- name: Install custom upssched-cmd script.
-  ansible.builtin.copy:
-    dest: "{{ nut_upssched_cmdscript }}"
-    content: "{{ nut_upssched_cmdscript_content }}"
-    owner: root
-    group: nut
-    mode: '0770'
-  when: nut_upssched_cmdscript_content | length > 0
-
-- name: Create upssched folders
-  ansible.builtin.file:
-    path: "{{ item | dirname }}"
-    owner: root
-    group: nut
-    mode: '0770'
-    recurse: true
-  with_items:
-    - "{{ nut_upssched_pipefn }}"
-    - "{{ nut_upssched_lockfn }}"
+- name: Remove NUT configuration
+  ansible.builtin.include_tasks: unconfigure.yml
+  when: nut_state == 'absent' and nut_managed_config
