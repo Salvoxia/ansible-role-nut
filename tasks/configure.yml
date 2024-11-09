@@ -1,3 +1,5 @@
+# This task copies the NUT configuration files and performs
+# templating using the role's variables
 ---
 - name: Install common NUT configuration files.
   ansible.builtin.template:

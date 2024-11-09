@@ -3,3 +3,22 @@ __nut_packages:
   - nut-client
   - nut-server
   - nut-monitor
+
+nut_packages_to_drivers:
+  - nut-i2c:
+      - asem
+  - nut-ipmi:
+      - nut-ipmipsu
+  - nut-modbus:
+      - adelsystem_cbi
+      - apc_modbus
+      - generic_modbus
+      - huawei-ups2000
+      - phoenixcontact_modbus
+      - socomec_jbus
+  - nut-powerman-pdu:
+      - powerman-pdu
+  - nut-snmp:
+      - snmp-ups
+  - nut-xml:
+      - netxml-ups

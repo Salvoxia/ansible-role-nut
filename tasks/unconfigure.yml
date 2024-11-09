@@ -1,3 +1,4 @@
+# This task removes the NUT configuration files
 ---
 - name: Remove NUT configuration files
   ansible.builtin.file:

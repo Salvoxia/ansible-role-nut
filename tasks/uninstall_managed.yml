@@ -2,6 +2,6 @@
 - name: Remove NUT via package manager
   ansible.builtin.package:
     name: "{{ nut_packages }}"
-    state: "absent"
+    state: absent
   when: nut_state == 'absent'
   

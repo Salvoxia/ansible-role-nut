@@ -1,0 +1,54 @@
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: Create and enable NUT services
+  when: nut_state == "present" and (nut_enable_service is undefined or nut_enable_service)
+  block:
+    - name: Enable systemd service nut-monitor
+      ansible.builtin.service:
+        name: nut-monitor
+        state: started
+        enabled: true
+      when: nut_services is not undefined and ('nut-monitor' in nut_services or 'nut-server' in nut_services)
+
+    - name: Enable systemd services for NUT server
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      when: nut_services is not undefined and 'nut-server' in nut_services
+      with_items:
+        - nut-driver-enumerator
+        - nut-server
+
+- name: Disable nut-monitor service
+  when: ansible_facts.services['nut-monitor.service'] is defined and
+        (nut_state == "absent" or (nut_enable_service is not undefined and not nut_enable_service) or 'nut-monitor' not in nut_services)
+  block:
+    - name: Stop and disable systemd service nut-monitor
+      ansible.builtin.service:
+        state: stopped
+        enabled: false
+        name: nut-monitor.service
+      notify:
+        - Systemctl daemon-reload
+      when: ansible_facts.services['nut-monitor.service'] is defined and ansible_facts.services['nut-monitor.service'].status != "not-found"
+
+- name: Disable and remove services for NUT server
+  when: nut_state == "absent" or (nut_enable_service is not undefined and not nut_enable_service) or 'nut-server' not in nut_services
+  block:
+    - name: Disable systemd services for NUT server
+      ansible.builtin.service:
+        state: stopped
+        enabled: false
+        name: "{{ item }}.service"
+      notify:
+        - Systemctl daemon-reload
+      when: ansible_facts.services['item.service'] is defined and ansible_facts.services['item.service'].status != "not-found"
+      with_items:
+        - nut-driver-enumerator
+        - nut-server

@@ -1,0 +1,6 @@
+---
+- example: "dpkg-deb: building package 'nut-build-deps' in '../nut-build-deps_2.8.0-7_amd64.deb'."
+  getval: "dpkg-deb: building package 'nut-build-deps' in '\\.\\.\\/(?P<pkgname>\\S+)'\\."
+  result:
+      build-deps-package: "{{ pkgname }}"
+  shared: True

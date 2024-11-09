@@ -14,6 +14,10 @@
   ansible.builtin.include_tasks: install_managed.yml
   when: nut_state == 'present' and not nut_install_from_source
 
+- name: Install or uninstall NUT from source
+  ansible.builtin.include_tasks: manage_install_from_source.yml
+  when: nut_install_from_source   
+
 - name: Configure NUT
   ansible.builtin.include_tasks: configure.yml
   when: nut_state == 'present' and nut_managed_config
