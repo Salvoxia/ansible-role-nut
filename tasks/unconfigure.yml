@@ -5,4 +5,3 @@
     path: /etc/nut
     state: absent
   when: nut_state == 'absent' and nut_managed_config
-  

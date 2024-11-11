@@ -13,7 +13,7 @@
       ansible.builtin.set_fact:
         nut_state: absent
         nut_install_from_source: true
-    
+
     - name: Uninstall NUT from source
       ansible.builtin.include_tasks: manage_install_from_source.yml
 

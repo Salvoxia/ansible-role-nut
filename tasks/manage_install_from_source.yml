@@ -29,8 +29,8 @@
   when: nut_installed_version is defined and nut_installed_version != nut_source_tag
 
 - name: Install build dependencies
-  when: "nut_reinstall 
-        or (nut_state == 'present' and nut_installed_version is not defined) 
+  when: "nut_reinstall
+        or (nut_state == 'present' and nut_installed_version is not defined)
         or (nut_state == 'absent' and nut_installed_version is defined)"
   block:
     - name: Install mk-build-deps
@@ -68,8 +68,8 @@
         deb: "{{ nut_dir.path }}/{{ build_deps_kg['build-deps-package'] }}"
 
 - name: Build list of NUT drivers
-  when: "'nut-server' in nut_packages and nut_reinstall 
-        or (nut_state == 'present' and nut_installed_version is not defined) 
+  when: "'nut-server' in nut_packages and nut_reinstall
+        or (nut_state == 'present' and nut_installed_version is not defined)
         or (nut_state == 'absent' and nut_installed_version is defined)"
   block:
     - name: Add drivers based one pacakge name
@@ -96,7 +96,7 @@
         nut_source_install_state: absent
         nut_source_install_tag: "{{ nut_installed_version }}"
         nut_source_install_repository: "{{ nut_source_repository }}"
-    
+
     - name: Uninstall NUT from source
       ansible.builtin.include_tasks: compile_and_install_or_uninstall_from_source.yml
 
@@ -109,7 +109,7 @@
         nut_source_install_state: present
         nut_source_install_tag: "{{ nut_source_tag }}"
         nut_source_install_repository: "{{ nut_source_repository }}"
-    
+
     - name: Install NUT from source
       ansible.builtin.include_tasks: compile_and_install_or_uninstall_from_source.yml
 

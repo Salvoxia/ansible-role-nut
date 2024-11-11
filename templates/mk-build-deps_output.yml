@@ -3,4 +3,4 @@
   getval: "dpkg-deb: building package 'nut-build-deps' in '\\.\\.\\/(?P<pkgname>\\S+)'\\."
   result:
       build-deps-package: "{{ pkgname }}"
-  shared: True
+  shared: true
