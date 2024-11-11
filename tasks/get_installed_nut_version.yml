@@ -19,7 +19,7 @@
       changed_when: false
       register: nut_upsc_help_result
       when: nut_installed
-    
+
     - name: Extract NUT version
       ansible.builtin.set_fact:
         # nut_upsc_help_result.stdout_lines[0] could look like this: "Network UPS Tools upsc 2.8.0-signed"

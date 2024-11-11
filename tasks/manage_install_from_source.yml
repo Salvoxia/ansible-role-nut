@@ -117,8 +117,8 @@
   ansible.builtin.include_tasks: service.yml
   when: nut_state == "present"
 
-#- name: Uninstall build dependencies
-#  ansible.builtin.package:
-#    name: nut-build-deps
-#    state: absent
-#  when: nut_state == 'absent'
+- name: Uninstall build dependencies
+  ansible.builtin.package:
+    name: nut-build-deps
+    state: absent
+  when: nut_state == 'absent'

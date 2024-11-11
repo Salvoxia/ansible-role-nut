@@ -1,5 +1,5 @@
 # This task performs a Git Clone and checkout operation on the desired source tag,
-# runs "configure", "make" and finally "make install" or "make uninstall". 
+# runs "configure", "make" and finally "make install" or "make uninstall".
 # Sources are removed in the end.
 #
 # It does NOT use the role's main variables but a subset:

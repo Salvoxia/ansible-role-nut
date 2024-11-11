@@ -1,9 +1,9 @@
 ---
-- name: Remove NUT via package manager
+- name: Remove NUT packages
   ansible.builtin.package:
     name: "{{ nut_packages }}"
     state: absent
-  
+
 - name: Perform autoremove (to remove libupsclient6)
   ansible.builtin.apt:
     autoremove: true
