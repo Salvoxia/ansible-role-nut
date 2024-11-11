@@ -14,10 +14,7 @@
 # - uninstall build dependencies
 ---
 - name: Ensure NUT is not installed via package manager
-  ansible.builtin.package:
-    name: "{{ nut_packages }}"
-    state: absent
-  when: nut_state == 'present'
+  ansible.builtin.include_tasks: uninstall_managed.yml
 
 - name: Initialize nut_reinstall to false
   ansible.builtin.set_fact:
@@ -32,7 +29,9 @@
   when: nut_installed_version is defined and nut_installed_version != nut_source_tag
 
 - name: Install build dependencies
-  when: nut_reinstall or (nut_state == 'present' and nut_installed_version is not defined)
+  when: "nut_reinstall 
+        or (nut_state == 'present' and nut_installed_version is not defined) 
+        or (nut_state == 'absent' and nut_installed_version is defined)"
   block:
     - name: Install mk-build-deps
       ansible.builtin.package:
@@ -69,7 +68,9 @@
         deb: "{{ nut_dir.path }}/{{ build_deps_kg['build-deps-package'] }}"
 
 - name: Build list of NUT drivers
-  when: "'nut-server' in nut_packages and nut_reinstall or (nut_state == 'present' and nut_installed_version is not defined)"
+  when: "'nut-server' in nut_packages and nut_reinstall 
+        or (nut_state == 'present' and nut_installed_version is not defined) 
+        or (nut_state == 'absent' and nut_installed_version is defined)"
   block:
     - name: Add drivers based one pacakge name
       ansible.builtin.set_fact:
@@ -116,8 +117,8 @@
   ansible.builtin.include_tasks: service.yml
   when: nut_state == "present"
 
-- name: Uninstall build dependencies
-  ansible.builtin.package:
-    deb: "{{ nut_source_install_dir.path }}/{{ build_deps_kg['build-deps-package'] }}"
-    state: absent
-  when: nut_state == 'absent'
+#- name: Uninstall build dependencies
+#  ansible.builtin.package:
+#    name: nut-build-deps
+#    state: absent
+#  when: nut_state == 'absent'

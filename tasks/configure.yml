@@ -1,6 +1,15 @@
 # This task copies the NUT configuration files and performs
 # templating using the role's variables
 ---
+- name: Create NUT configuration folder.
+  ansible.builtin.file:
+    path: "/etc/nut"
+    state: directory
+    owner: root
+    group: nut
+    mode: '0755'
+  when: nut_managed_config
+
 - name: Install common NUT configuration files.
   ansible.builtin.template:
     src: "{{ item }}.j2"

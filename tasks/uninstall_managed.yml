@@ -3,5 +3,7 @@
   ansible.builtin.package:
     name: "{{ nut_packages }}"
     state: absent
-  when: nut_state == 'absent'
   
+- name: Perform autoremove (to remove libupsclient6)
+  ansible.builtin.apt:
+    autoremove: true

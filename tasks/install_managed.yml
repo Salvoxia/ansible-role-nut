@@ -4,10 +4,10 @@
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
-  when: installed_nut_version is defined
+  when: nut_installed_version is defined
 
 - name: Uninstall NUT from source
-  when: "installed_nut_version is defined and ansible_facts.packages['nut-monitor'] is not defined or nut_state == 'absent'"
+  when: "nut_installed_version is defined and ansible_facts.packages['nut-client'] is not defined or nut_state == 'absent'"
   block:
     - name: Set uninstall variables
       ansible.builtin.set_fact:
@@ -21,7 +21,6 @@
       ansible.builtin.set_fact:
         nut_state: present
         nut_install_from_source: false
-
 
 - name: Ensure NUT packages are installed.
   ansible.builtin.package:

@@ -10,6 +10,16 @@
 ---
 - name: Get and configure NUT sources
   block:
+    - name: Initialize nut_source_install_repository
+      ansible.builtin.set_fact:
+        nut_source_install_repository: "{{ nut_source_repository }}"
+      when: nut_source_install_repository is not defined
+
+    - name: Initialize nut_source_install_tag
+      ansible.builtin.set_fact:
+        nut_source_install_tag: "{{ nut_source_tag }}"
+      when: nut_source_install_tag is not defined
+
     - name: Git checkout
       ansible.builtin.git:
         repo: '{{ nut_source_install_repository }}'
