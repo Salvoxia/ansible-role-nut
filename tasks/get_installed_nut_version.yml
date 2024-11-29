@@ -1,0 +1,27 @@
+# This determines if NUT is installed and sets
+# a fact 'nut_installed_version' with the format 'v<major>.<minor>.<patch>' if it is.
+# After running this task, check if NUT is installed by checking "nut_installed_version is defined"
+---
+- name: Determine if NUT must be removed from source to install desired version
+  block:
+    - name: Check if NUT is installed
+      ansible.builtin.command: which upsc
+      changed_when: false
+      failed_when: nut_install_check_result.rc not in [0,1]
+      register: nut_install_check_result
+
+    - name: Evaluating check result
+      ansible.builtin.set_fact:
+        nut_installed: "{{ nut_install_check_result.rc in [0] }}"
+
+    - name: Get installed NUT version
+      ansible.builtin.command: upsc -h
+      changed_when: false
+      register: nut_upsc_help_result
+      when: nut_installed
+
+    - name: Extract NUT version
+      ansible.builtin.set_fact:
+        # nut_upsc_help_result.stdout_lines[0] could look like this: "Network UPS Tools upsc 2.8.0-signed"
+        nut_installed_version: "v{{ nut_upsc_help_result.stdout_lines[0] | regex_search('.*(\\d+\\.\\d+.\\d).*', '\\1') | first }}"
+      when: nut_installed

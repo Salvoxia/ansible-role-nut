@@ -1,0 +1,19 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: salvoxia.nut
+      nut_install_from_source: false
+      nut_drivers:
+        - dummy-ups
+      nut_users:
+        - name: monitor
+          password: changeme
+          role: secondary
+      nut_ups:
+        - name: dummy_ups
+          monitoruser: monitor
+          driver: dummy-ups
+          device: /etc/nut/dummy-ups.dev
+          description: "Dummy UPS for testing"

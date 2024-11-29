@@ -1,0 +1,7 @@
+---
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: "Find existing NUT services."
+  ansible.builtin.set_fact:
+    nut_services_installed: "{{ ansible_facts['services'].values() | selectattr('status', 'defined') | selectattr('name', 'search', '^nut-.*') | list }}"

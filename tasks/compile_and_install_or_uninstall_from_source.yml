@@ -1,0 +1,83 @@
+# This task performs a Git Clone and checkout operation on the desired source tag,
+# runs "configure", "make" and finally "make install" or "make uninstall".
+# Sources are removed in the end.
+#
+# It does NOT use the role's main variables but a subset:
+# - nut_source_install_repository: The Git repository to compile NUT from
+# - nut_source_install_dir: The working directory for cloning into and compiling in
+# - nut_source_install_tag: The Git tag/branch to check out before installing
+# - nut_source_install_state: 'present' to install or 'absent' to uninstall
+---
+- name: Get and configure NUT sources
+  block:
+    - name: Initialize nut_source_install_repository
+      ansible.builtin.set_fact:
+        nut_source_install_repository: "{{ nut_source_repository }}"
+      when: nut_source_install_repository is not defined
+
+    - name: Initialize nut_source_install_tag
+      ansible.builtin.set_fact:
+        nut_source_install_tag: "{{ nut_source_tag }}"
+      when: nut_source_install_tag is not defined
+
+    - name: Git checkout
+      ansible.builtin.git:
+        repo: '{{ nut_source_install_repository }}'
+        dest: "{{ nut_source_install_dir.path }}/nut"
+        version: "{{ nut_source_install_tag }}"
+
+    - name: Run NUT autogen
+      ansible.builtin.command:
+        chdir: "{{ nut_source_install_dir.path }}/nut"
+        cmd: "./autogen.sh"
+      changed_when: true
+
+    - name: Gather Architecture
+      ansible.builtin.command:
+        cmd: "gcc -print-multiarch"
+      changed_when: true
+      register: gcc_multiarch
+
+    - name: Run NUT configure
+      ansible.builtin.command:
+        chdir: "{{ nut_source_install_dir.path }}/nut"
+        cmd: |
+          ./configure --prefix=/usr
+          --includedir=/usr/include
+          --infodir=/usr/share/info --sysconfdir=/etc/nut --localstatedir=/var
+          --libexecdir=/usr/lib/nut --srcdir=.
+          --disable-silent-rules --libdir=/usr/lib/{{ gcc_multiarch.stdout }}
+          --with-ssl --with-nss {{ nut_configure_with_drivers }} --enable-static
+          --with-statepath=/var/run/nut --with-altpidpath=/var/run/nut
+          --with-drvpath=/lib/nut --with-pidpath=/var/run/nut
+          --datadir=/usr/share/nut
+          --with-user=nut --with-group=nut --with-udev-dir=/lib/udev
+          --with-systemdsystemunitdir=yes --with-systemdshutdowndir --with-docs=no
+      changed_when: true
+
+- name: Install NUT from source
+  when: nut_source_install_state == 'present'
+  block:
+    - name: Make NUT
+      community.general.make:
+        chdir: "{{ nut_source_install_dir.path }}/nut"
+
+    - name: Install NUT
+      community.general.make:
+        chdir: "{{ nut_source_install_dir.path }}/nut"
+        target: install
+      become: true
+
+- name: Uninstall NUT from source
+  when: nut_source_install_state == 'absent'
+  block:
+    - name: Uninstall NUT
+      community.general.make:
+        chdir: "{{ nut_source_install_dir.path }}/nut"
+        target: uninstall
+      become: true
+
+- name: Remove NUT sources
+  ansible.builtin.file:
+    path: "{{ nut_source_install_dir.path }}"
+    state: absent

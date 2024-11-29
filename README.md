@@ -4,7 +4,70 @@
 [![Ansible Galaxy Downloads](https://img.shields.io/badge/dynamic/json?color=blueviolet&label=Galaxy%20Downloads&query=%24.download_count&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F39518%2F%3Fformat%3Djson)](https://galaxy.ansible.com/ui/standalone/roles/salvoxia/nut/)
 
 Installs and configures [NUT](http://networkupstools.org/) (Nework UPS
-tools) on Debian based systems.
+tools) on Debian based systems, while allowing for advanced NUT user configuration.  
+Also supports installing NUT from source tags to gain access to more up-to-date versions if the system's package manager does not provide them.
+
+__Key Features:__
+  - Set `nut_state` to either install or remove NUT
+  - Allow for advanced NUT user configuration with detailed permission management
+  - Install NUT from a specific source tag instead of package manager in case the package manager provided version is too old
+  - Switch between specific versions installed from source
+  - Switch between installation from package manager and source (or vice versa)
+
+## Installing from Source
+
+By default the role will install NUT using the package manager as determined by the package manager. If the system's package manager comes with an older NUT package, it is possible to install NUT from source. The role will automatically install all build dependencies, check out the desired source version, compile and install NUT from source.  
+It is also possible to use this role for updating NUT installed from source to a newer version (or downgrade to an older version). It is not a 'real' upgrade, but the old version is uninstalled before the new version is installed.
+The role supports switching between NUT installed by package manager and installed from source.
+
+The following variables control installation from source:
+<table>
+  <tr>
+    <th>Variable</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_install_from_source`
+    </td>
+    <td>
+Flag indicating whether to install NUT from source or not.<br>All the variables below have no effect if not set to `true`.<br>Default: `false`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_source_repository`
+    </td>
+    <td>
+The URL to the Git Repository to compile NUT from.<br>Default: `https://github.com/networkupstools/nut.git`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_source_tag`
+    </td>
+    <td>
+The Git Tag to check out before compiling NUT.<br>Can be a branch name as well.<br>Default: `v2.8.2`
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      
+`nut_drivers`
+    </td>
+    <td>
+A list of NUT driver names to compile NUT. <br>For a list fo valid drivers refer to the `Drivers` section in the [generic manual for unified NUT drivers](https://networkupstools.org/docs/man/nutupsdrv.html)<br>Example:
+```yaml
+nut_drivers:
+  - snmp-ups
+  - netxml-ups
+```
+  </td>
+  </tr>
+</table>
 
 ## Role Variables
 
@@ -250,27 +313,11 @@ All these variables are optional:
   <tr>
     <td> 
       
-`nut_services`
-    </td>
-    <td>
-
-List of service names to enable<br>Default:
-```yaml
-nut_services:
-  - nut-driver-enumerator
-  - nut-monitor
-  - nut-server
-```
-  </td>
-  </tr>
-  <tr>
-    <td> 
-      
 `nut_enable_service`
     </td>
     <td>
 
-Flag indicating whether to start the services defined in `nut_services` after configuration.<br>Default: `true`
+Flag indicating whether to start the services appropriate for the installed `nut_packages` after configuration.<br>Default: `true`
     </td>
   </tr>
   <tr>
@@ -420,7 +467,12 @@ Additional content to append to the `upsmon.conf` file
 ```
 
 For more examples, please see `tests/test.yml`.
+## Cheat Sheet
 
+Run a Docker container with systemd:
+```bash
+sudo docker run --tmpfs /tmp --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cgroupns=host --privileged --name sysd --rm geerlingguy/docker-debian11-ansible
+```
 ## License
 MIT
 

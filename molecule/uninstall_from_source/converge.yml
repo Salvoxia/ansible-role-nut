@@ -1,0 +1,7 @@
+---
+- name: Uninstall NUT
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: salvoxia.nut
+      nut_state: absent

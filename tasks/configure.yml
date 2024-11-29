@@ -1,0 +1,79 @@
+# This task copies the NUT configuration files and performs
+# templating using the role's variables
+---
+- name: Ensure NUT group exists
+  ansible.builtin.group:
+    name: nut
+    state: present
+
+- name: Ensure NUT user exists
+  ansible.builtin.user:
+    name: nut
+    group: nut
+    state: present
+
+- name: Create NUT configuration folder.
+  ansible.builtin.file:
+    path: "/etc/nut"
+    state: directory
+    owner: root
+    group: nut
+    mode: '0755'
+  when: nut_managed_config
+
+- name: Install common NUT configuration files.
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nut/{{ item }}"
+    owner: root
+    group: nut
+    mode: '0640'
+  with_items:
+    - nut.conf
+    - upsmon.conf
+    - upssched.conf
+  notify: Restart nut
+  when: nut_managed_config
+
+- name: Install NUT configuration files.
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nut/{{ item }}"
+    owner: root
+    group: nut
+    mode: '0640'
+  with_items:
+    - ups.conf
+    - upsd.users
+    - upsd.conf
+  notify: Restart nut
+  when: nut_managed_config and 'nut-server' in nut_packages
+
+- name: Install custom notifycmd script.
+  ansible.builtin.copy:
+    dest: "{{ nut_upsmon_notifycmd }}"
+    content: "{{ nut_upsmon_notifycmd_content }}"
+    owner: root
+    group: nut
+    mode: '0770'
+  when: nut_upsmon_notifycmd_content | length > 0
+
+- name: Install custom upssched-cmd script.
+  ansible.builtin.copy:
+    dest: "{{ nut_upssched_cmdscript }}"
+    content: "{{ nut_upssched_cmdscript_content }}"
+    owner: root
+    group: nut
+    mode: '0770'
+  when: nut_upssched_cmdscript_content | length > 0
+
+- name: Create upssched folders
+  ansible.builtin.file:
+    path: "{{ item | dirname }}"
+    owner: nut
+    group: nut
+    mode: '0770'
+    recurse: true
+  with_items:
+    - "{{ nut_upssched_pipefn }}"
+    - "{{ nut_upssched_lockfn }}"

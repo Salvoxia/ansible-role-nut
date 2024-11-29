@@ -1,0 +1,33 @@
+---
+- name: Get installed NUT version
+  ansible.builtin.include_tasks: get_installed_nut_version.yml
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+  when: nut_installed_version is defined
+
+- name: Uninstall NUT from source
+  when: "nut_installed_version is defined and ansible_facts.packages['nut-client'] is not defined or nut_state == 'absent'"
+  block:
+    - name: Set uninstall variables
+      ansible.builtin.set_fact:
+        nut_state: absent
+        nut_install_from_source: true
+
+    - name: Uninstall NUT from source
+      ansible.builtin.include_tasks: manage_install_from_source.yml
+
+    - name: Reset install variables
+      ansible.builtin.set_fact:
+        nut_state: present
+        nut_install_from_source: false
+
+- name: Ensure NUT packages are installed.
+  ansible.builtin.package:
+    name: "{{ nut_packages }}"
+    update_cache: true
+    state: present
+
+- name: Configure NUT
+  ansible.builtin.include_tasks: configure.yml
+  when: nut_state == 'present' and nut_managed_config

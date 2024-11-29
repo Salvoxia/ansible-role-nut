@@ -1,7 +1,8 @@
 ---
 - name: Restart nut
-  ansible.builtin.service:
-    name: "{{ item }}"
-    state: restarted
-  with_items: "{{ nut_services }}"
+  ansible.builtin.include_tasks: "../tasks/restart.yml"
   when: nut_enable_service
+
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true

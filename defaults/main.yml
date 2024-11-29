@@ -2,16 +2,26 @@
 # Whether to start or not the NUT service after the configuration
 nut_enable_service: true
 
+# Indicates whether to install or remove NUT
+nut_state: present
+
+# Flag indicating whether to compile and install NUT from source instead of a package manager
+nut_install_from_source: false
+# Git source repository to use when installing NUT from source
+nut_source_repository: https://github.com/networkupstools/nut.git
+# The Git tag to compile when installing NUT from source
+nut_source_tag: v2.8.2
+# The NUT drivers to configure NUT with when installing from source. This variable only has any effect
+# if nut_install_from_source is set to true.
+nut_drivers: []
+#  - snmp-ups
+#  - netxml-ups
+
 # If this is set to false, none of the following options will have any effect.
 # Any and all changes to /etc/nut/* will be your responsibility.
 nut_managed_config: true
 
 nut_mode: standalone
-
-nut_services:
-  - nut-driver-enumerator
-  - nut-monitor
-  - nut-server
 
 nut_users:
   - name: monitor

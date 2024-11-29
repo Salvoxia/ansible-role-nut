@@ -1,0 +1,7 @@
+---
+- name: Converge part two
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: salvoxia.nut
+      nut_state: absent
