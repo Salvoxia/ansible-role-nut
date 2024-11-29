@@ -19,7 +19,7 @@
         dest: "/etc/nut/dummy-ups2.dev"
         mode: '0755'
   roles:
-    - role: nut
+    - role: salvoxia.nut
       nut_users:
         - name: monitor
           password: changeme

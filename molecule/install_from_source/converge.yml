@@ -14,7 +14,7 @@
         dest: "/etc/nut/dummy-ups.dev"
         mode: '0755'
   roles:
-    - role: nut
+    - role: salvoxia.nut
       nut_install_from_source: true
       nut_source_tag: v2.8.2
       nut_drivers:

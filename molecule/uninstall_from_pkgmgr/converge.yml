@@ -3,5 +3,5 @@
   hosts: all
   gather_facts: true
   roles:
-    - role: nut
+    - role: salvoxia.nut
       nut_state: absent
