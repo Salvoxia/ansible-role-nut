@@ -14,11 +14,18 @@ __Key Features:__
   - Switch between specific versions installed from source
   - Switch between installation from package manager and source (or vice versa)
 
+__Dependencies:__
+  - [ansible.utils](https://galaxy.ansible.com/ui/repo/published/ansible/utils/)
+
+Install dependencies with
+```shell
+ansible-galaxy install -r requirements.yml
+```
 ## Installing from Source
 
-By default the role will install NUT using the package manager as determined by the package manager. If the system's package manager comes with an older NUT package, it is possible to install NUT from source. The role will automatically install all build dependencies, check out the desired source version, compile and install NUT from source.  
+By default the role will install NUT using the package manager. If the system's package manager comes with an older NUT package, it is possible to install NUT from source. The role will automatically install all build dependencies, check out the desired source version, compile and install NUT from source.  
 It is also possible to use this role for updating NUT installed from source to a newer version (or downgrade to an older version). It is not a 'real' upgrade, but the old version is uninstalled before the new version is installed.
-The role supports switching between NUT installed by package manager and installed from source.
+The role supports switching between NUT installed by package manager and installed from source (and vice versa).
 
 The following variables control installation from source:
 <table>
@@ -453,7 +460,7 @@ Additional content to append to the `upsmon.conf` file
 ```yaml
 - hosts: all
   roles:
-  - role: ntd.nut
+  - role: salvoxia.nut
     nut_users:
       - name: monitor
         password: changeme
@@ -466,7 +473,9 @@ Additional content to append to the `upsmon.conf` file
         description: iPlug 800
 ```
 
-For more examples, please see `tests/test.yml`.
+For more examples, please see `molecule/*/converge.yml` and `molecule/*/prepare.yml`.
+
+
 ## Cheat Sheet
 
 Run a Docker container with systemd:
