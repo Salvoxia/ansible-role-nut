@@ -49,4 +49,3 @@
         loop_var: service_name
       when: nut_state == 'absent'
             and service_name != 'nut-driver@.service'
-

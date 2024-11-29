@@ -1,6 +1,7 @@
+---
 - name: Uninstall NUT
   hosts: all
   gather_facts: true
   roles:
-  - role: nut
-    nut_state: absent
+    - role: nut
+      nut_state: absent

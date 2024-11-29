@@ -14,19 +14,19 @@
         dest: "/etc/nut/dummy-ups.dev"
         mode: '0755'
   roles:
-  - role: nut
-    nut_install_from_source: true
-    nut_source_repository: https://git.local.salvoxia.de/Github/nut.git
-    nut_source_tag: v2.8.2
-    nut_drivers:
-      - dummy-ups
-    nut_users:
-      - name: monitor
-        password: changeme
-        role: secondary
-    nut_ups:
-      - name: dummy_ups
-        monitoruser: monitor
-        driver: dummy-ups
-        device: /etc/nut/dummy-ups.dev
-        description: "Dummy UPS for testing"
+    - role: nut
+      nut_install_from_source: true
+      nut_source_repository: https://git.local.salvoxia.de/Github/nut.git
+      nut_source_tag: v2.8.2
+      nut_drivers:
+        - dummy-ups
+      nut_users:
+        - name: monitor
+          password: changeme
+          role: secondary
+      nut_ups:
+        - name: dummy_ups
+          monitoruser: monitor
+          driver: dummy-ups
+          device: /etc/nut/dummy-ups.dev
+          description: "Dummy UPS for testing"

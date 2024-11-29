@@ -20,13 +20,13 @@
 
     - name: Get installed NUT version
       ansible.builtin.include_tasks: ../../tasks/get_installed_nut_version.yml
-    
+
     - name: Verify installed version matches desired version
       ansible.builtin.assert:
-        that: 
+        that:
           - nut_installed_version is defined
           - nut_installed_version == "v2.8.2"
-    
+
     - name: Gather installed services
       ansible.builtin.service_facts:
 
@@ -44,6 +44,6 @@
 
     - name: Verify no NUT packages are installed
       ansible.builtin.assert:
-        that: 
+        that:
           - ansible_facts.packages['nut-client'] is not defined
           - ansible_facts.packages['nut-server'] is not defined

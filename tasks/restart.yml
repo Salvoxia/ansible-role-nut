@@ -2,7 +2,7 @@
 - name: Get installed NUT services
   ansible.builtin.include_tasks: get_installed_nut_services.yml
   when: nut_enable_service
-  
+
 - name: "Restart nut."
   ansible.builtin.service:
     name: "{{ item }}"

@@ -19,7 +19,7 @@
 - name: Gather package facts
   ansible.builtin.package_facts:
   when: nut_installed
-      
+
 - name: Ensure NUT is not installed via package manager
   ansible.builtin.include_tasks: uninstall.yml
   when: ansible_facts.packages['nut-client'] is defined
@@ -55,12 +55,12 @@
         state: directory
         prefix: nut
       register: nut_dir
-    
+
     - name: Ensure debian source repository is added to sources.list
       ansible.builtin.apt_repository:
         repo: deb-src http://deb.debian.org/debian {{ ansible_distribution_release }} main
         state: present
-        
+
     - name: Create dependency package and install build dependencies
       ansible.builtin.command: mk-build-deps nut-server
       args:

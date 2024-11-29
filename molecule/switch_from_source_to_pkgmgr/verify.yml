@@ -55,6 +55,6 @@
 
     - name: Verify NUT packages are installed
       ansible.builtin.assert:
-        that: 
+        that:
           - ansible_facts.packages['nut-client'] is defined
           - ansible_facts.packages['nut-server'] is defined
