@@ -16,7 +16,6 @@
   roles:
     - role: nut
       nut_install_from_source: true
-      nut_source_repository: https://git.local.salvoxia.de/Github/nut.git
       nut_source_tag: v2.8.2
       nut_drivers:
         - dummy-ups
