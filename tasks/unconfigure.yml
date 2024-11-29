@@ -5,3 +5,14 @@
     path: /etc/nut
     state: absent
   when: nut_state == 'absent' and nut_managed_config
+
+- name: Ensure NUT user is removed
+  ansible.builtin.user:
+    name: nut
+    group: nut
+    state: absent
+
+- name: Ensure NUT group is removed
+  ansible.builtin.group:
+    name: nut
+    state: absent

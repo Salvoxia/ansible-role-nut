@@ -10,10 +10,6 @@
     nut_packages: "{{ __nut_packages | list }}"
   when: nut_packages is not defined
 
-- name: Configure NUT
-  ansible.builtin.include_tasks: configure.yml
-  when: nut_state == 'present' and nut_managed_config
-
 - name: Install NUT via package manager
   ansible.builtin.include_tasks: install_managed.yml
   when: nut_state == 'present' and not nut_install_from_source
@@ -21,6 +17,10 @@
 - name: Install or uninstall NUT from source
   ansible.builtin.include_tasks: manage_install_from_source.yml
   when: nut_state == 'present' and nut_install_from_source
+
+- name: Configure NUT services
+  ansible.builtin.include_tasks: service.yml
+  when: nut_state == "present"
 
 - name: Uninstall NUT via package manager
   ansible.builtin.include_tasks: uninstall.yml

@@ -3,5 +3,13 @@ extends: default
 
 rules:
   line-length:
-    max: 200
+    max: 250
     level: warning
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: false
+  braces:
+    max-spaces-inside: 1
+  octal-values:
+    forbid-explicit-octal: true
+    forbid-implicit-octal: true

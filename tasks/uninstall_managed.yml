@@ -1,6 +1,7 @@
 ---
 - name: Remove NUT packages
-  ansible.builtin.package:
+  ansible.builtin.apt:
+    purge: true
     name: "{{ nut_packages }}"
     state: absent
 

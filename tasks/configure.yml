@@ -1,6 +1,17 @@
 # This task copies the NUT configuration files and performs
 # templating using the role's variables
 ---
+- name: Ensure NUT group exists
+  ansible.builtin.group:
+    name: nut
+    state: present
+
+- name: Ensure NUT user exists
+  ansible.builtin.user:
+    name: nut
+    group: nut
+    state: present
+
 - name: Create NUT configuration folder.
   ansible.builtin.file:
     path: "/etc/nut"
@@ -59,7 +70,7 @@
 - name: Create upssched folders
   ansible.builtin.file:
     path: "{{ item | dirname }}"
-    owner: root
+    owner: nut
     group: nut
     mode: '0770'
     recurse: true

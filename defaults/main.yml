@@ -23,11 +23,6 @@ nut_managed_config: true
 
 nut_mode: standalone
 
-nut_services:
-  - nut-driver-enumerator
-  - nut-monitor
-  - nut-server
-
 nut_users:
   - name: monitor
     password: changeme

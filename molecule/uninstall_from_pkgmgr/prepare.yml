@@ -1,0 +1,40 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  pre_tasks:
+    - name: Create NUT configuration folder.
+      ansible.builtin.file:
+        path: "/etc/nut"
+        state: directory
+        mode: '0755'
+    - name: Copy dummy-ups.dev file
+      ansible.builtin.copy:
+        src: "../dummy-ups.dev"
+        dest: "/etc/nut/dummy-ups.dev"
+        mode: '0755'
+    - name: Copy dummy-ups2.dev file
+      ansible.builtin.copy:
+        src: "../dummy-ups2.dev"
+        dest: "/etc/nut/dummy-ups2.dev"
+        mode: '0755'
+  roles:
+  - role: nut
+    nut_users:
+      - name: monitor
+        password: changeme
+        role: secondary
+      - name: second_user
+        password: insecure_password
+        role: primary
+    nut_ups:
+      - name: dummy_ups
+        monitoruser: monitor
+        driver: dummy-ups
+        device: /etc/nut/dummy-ups.dev
+        description: "Dummy UPS for testing"
+      - name: dummy_ups2
+        monitoruser: second_user
+        driver: dummy-ups
+        device: /etc/nut/dummy-ups2.dev
+        description: "Dummy UPS 2 for testing"

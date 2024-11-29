@@ -7,6 +7,13 @@ Installs and configures [NUT](http://networkupstools.org/) (Nework UPS
 tools) on Debian based systems, while allowing for advanced NUT user configuration.  
 Also supports installing NUT from source tags to gain access to more up-to-date versions if the system's package manager does not provide them.
 
+__Key Features:__
+  - Set `nut_state` to either install or remove NUT
+  - Allow for advanced NUT user configuration with detailed permission management
+  - Install NUT from a specific source tag instead of package manager in case the package manager provided version is too old
+  - Switch between specific versions installed from source
+  - Switch between installation from package manager and source (or vice versa)
+
 ## Installing from Source
 
 By default the role will install NUT using the package manager as determined by the package manager. If the system's package manager comes with an older NUT package, it is possible to install NUT from source. The role will automatically install all build dependencies, check out the desired source version, compile and install NUT from source.  
@@ -306,28 +313,11 @@ All these variables are optional:
   <tr>
     <td> 
       
-`nut_services`
-    </td>
-    <td>
-
-List of service names to enable<br>Default:
-```yaml
-nut_services:
-  - nut-driver-enumerator
-  - nut-monitor
-  - nut-server
-```
-You might have to change this setting when installing an older version from source.
-  </td>
-  </tr>
-  <tr>
-    <td> 
-      
 `nut_enable_service`
     </td>
     <td>
 
-Flag indicating whether to start the services defined in `nut_services` after configuration.<br>Default: `true`
+Flag indicating whether to start the services appropriate for the installed `nut_packages` after configuration.<br>Default: `true`
     </td>
   </tr>
   <tr>
@@ -477,7 +467,12 @@ Additional content to append to the `upsmon.conf` file
 ```
 
 For more examples, please see `tests/test.yml`.
+## Cheat Sheet
 
+Run a Docker container with systemd:
+```bash
+sudo docker run --tmpfs /tmp --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cgroupns=host --privileged --name sysd --rm geerlingguy/docker-debian11-ansible
+```
 ## License
 MIT
 

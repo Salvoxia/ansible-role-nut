@@ -1,0 +1,14 @@
+---
+- name: Determine service unit file
+  ansible.builtin.systemd_service:
+    name: "{{ service_name }}"
+  register: service_status
+  when: nut_state == "absent"
+
+- name: Remove service unit files
+  ansible.builtin.file:
+    state: absent
+    path: "{{ service_status.status['FragmentPath'] }}"
+  notify:
+    - Systemctl daemon-reload
+  when: nut_state == "absent" and service_status.status['FragmentPath'] is defined

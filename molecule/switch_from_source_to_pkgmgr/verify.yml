@@ -1,0 +1,60 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Verify communication with dummy_ups
+      ansible.builtin.command:
+        argv:
+          - upsc
+          - dummy_ups
+
+    - name: Perform command on dummy_ups with monitor user
+      ansible.builtin.command:
+        argv:
+          - upscmd
+          - -a monitor
+          - -p changeme
+          - dummy_ups
+          - load.off
+
+    - name: Perform command on dummy_ups2 with monitor user
+      ansible.builtin.command:
+        argv:
+          - upscmd
+          - -a monitor
+          - -p changeme
+          - dummy_ups2
+          - load.off
+    - name: Verify communication with dummy_ups2
+      ansible.builtin.command:
+        argv:
+          - upsc
+          - dummy_ups2
+
+    - name: Perform command on dummy_ups with second_user user
+      ansible.builtin.command:
+        argv:
+          - upscmd
+          - -a second_user
+          - -p insecure_password
+          - dummy_ups
+          - load.off
+
+    - name: Perform command on dummy_ups2 with second_user user
+      ansible.builtin.command:
+        argv:
+          - upscmd
+          - -a second_user
+          - -p insecure_password
+          - dummy_ups2
+          - load.off
+
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+
+    - name: Verify NUT packages are installed
+      ansible.builtin.assert:
+        that: 
+          - ansible_facts.packages['nut-client'] is defined
+          - ansible_facts.packages['nut-server'] is defined

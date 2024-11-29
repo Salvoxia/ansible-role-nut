@@ -25,4 +25,9 @@
 - name: Ensure NUT packages are installed.
   ansible.builtin.package:
     name: "{{ nut_packages }}"
+    update_cache: true
     state: present
+
+- name: Configure NUT
+  ansible.builtin.include_tasks: configure.yml
+  when: nut_state == 'present' and nut_managed_config

@@ -2,7 +2,6 @@
 __nut_packages:
   - nut-client
   - nut-server
-  - nut-monitor
 
 nut_packages_to_drivers:
   - nut-i2c:

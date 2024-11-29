@@ -5,7 +5,9 @@
     fail_msg: Variable nut_state must be one of ['present', 'absent']!
 
 - name: Verify variables for generating configuration
-  when: nut_managed_config is defined and nut_managed_config
+  when: nut_state == 'present'
+        and nut_managed_config is defined 
+        and nut_managed_config
   block:
     - name: Assert NUT mode
       ansible.builtin.assert:

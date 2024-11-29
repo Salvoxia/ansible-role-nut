@@ -1,0 +1,36 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Check if upsc is in PATH
+      ansible.builtin.command: which upsc
+      changed_when: false
+      failed_when: nut_install_check_result.rc not in [0, 1]
+      register: nut_install_check_result
+
+    - name: Verify that NUT is not installed
+      ansible.builtin.assert:
+        that: 
+          - nut_install_check_result.rc == 1
+
+    - name: Gather installed services
+      ansible.builtin.service_facts:
+
+    - name: Verify NUT services are not present
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['nut-monitor.service'] is undefined
+          - ansible_facts.services['nut-server.service'] is undefined
+          - ansible_facts.services['nut-driver.service'] is undefined
+          - ansible_facts.services['nut-driver-enumerator.service'] is undefined
+
+    - name: Check if NUT configuration exists
+      ansible.builtin.stat:
+        path: /etc/nut
+      register: register_name
+
+    - name: Verify NUT configuration folder does not exist
+      ansible.builtin.assert:
+        that:
+          - register_name.stat.exists is false

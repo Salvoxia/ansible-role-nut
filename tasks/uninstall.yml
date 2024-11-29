@@ -6,6 +6,26 @@
   ansible.builtin.package_facts:
   when: nut_installed_version is defined
 
+- name: Disable services
+  when: nut_installed_version is defined
+  block:
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: "Find existing NUT services."
+      ansible.builtin.set_fact:
+        nut_services_existing: "{{ ansible_facts['services'].values() | selectattr('status', 'defined') | rejectattr('status', 'equalto', 'masked') | selectattr('name', 'search', '^nut-.*') | list }}"
+
+    - name: Stop and disable services
+      ansible.builtin.service:
+        state: stopped
+        enabled: false
+        name: "{{ item.name }}"
+      notify:
+        - Systemctl daemon-reload
+      when: item.name != 'nut-driver@.service'
+      loop: "{{ nut_services_existing }}"
+
 - name: Uninstall NUT from source
   when: "nut_installed_version is defined and ansible_facts.packages['nut-client'] is not defined"
   block:
@@ -20,3 +40,6 @@
 - name: Remove NUT via package manager
   when: "nut_installed_version is defined and ansible_facts.packages['nut-client'] is defined"
   ansible.builtin.include_tasks: uninstall_managed.yml
+
+- name: Uninstall NUT services
+  ansible.builtin.include_tasks: service.yml

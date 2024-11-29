@@ -1,55 +1,52 @@
 ---
-- name: Systemctl daemon-reload
-  ansible.builtin.systemd:
-    daemon_reload: true
-
-- name: Populate service facts
+- name: Get service facts
   ansible.builtin.service_facts:
+  when: nut_services is defined
+
+- name: Get installed NUT services
+  ansible.builtin.include_tasks: get_installed_nut_services.yml
+  when: nut_services is not defined or nut_state == 'absent'
+
+- name: Populate nut_services
+  ansible.builtin.set_fact:
+    nut_services: "{{ nut_services_installed }}"
+  when: nut_services is not defined
 
 - name: Create and enable NUT services
-  when: nut_state == "present" and (nut_enable_service is undefined or nut_enable_service)
+  when: nut_state == "present" and nut_enable_service
   block:
-    - name: Enable systemd service nut-monitor
-      ansible.builtin.service:
-        name: nut-monitor
-        state: started
-        enabled: true
-      when: nut_services is not undefined and ('nut-monitor' in nut_services or 'nut-server' in nut_services)
-
-    - name: Enable systemd services for NUT server
+    - name: Enable systemd services
       ansible.builtin.service:
         name: "{{ item }}"
         state: started
         enabled: true
-      when: nut_services is not undefined and 'nut-server' in nut_services
-      with_items:
-        - nut-driver-enumerator
-        - nut-server
+      when: "nut_services is not undefined
+            and ansible_facts.services[item] is defined
+            and ansible_facts.services[item].status != 'running'"
+      loop: "{{ nut_services }}"
 
-- name: Disable nut-monitor service
-  when: ansible_facts.services['nut-monitor.service'] is defined and
-        (nut_state == "absent" or (nut_enable_service is not undefined and not nut_enable_service) or 'nut-monitor' not in nut_services)
+- name: Disable and remove NUT services service
+  when: nut_state == "absent" or not nut_enable_service
   block:
-    - name: Stop and disable systemd service nut-monitor
+    - name: Stop and disable services
       ansible.builtin.service:
         state: stopped
         enabled: false
-        name: nut-monitor.service
+        name: "{{ item.name }}"
       notify:
         - Systemctl daemon-reload
-      when: ansible_facts.services['nut-monitor.service'] is defined and ansible_facts.services['nut-monitor.service'].status != "not-found"
+      when: item.name != 'nut-driver@.service'
+            and item.status not in ['not-found', 'failed']
+      loop: "{{ nut_services_installed }}"
 
-- name: Disable and remove services for NUT server
-  when: nut_state == "absent" or (nut_enable_service is not undefined and not nut_enable_service) or 'nut-server' not in nut_services
-  block:
-    - name: Disable systemd services for NUT server
-      ansible.builtin.service:
-        state: stopped
-        enabled: false
-        name: "{{ item }}.service"
-      notify:
-        - Systemctl daemon-reload
-      when: ansible_facts.services['item.service'] is defined and ansible_facts.services['item.service'].status != "not-found"
-      with_items:
-        - nut-driver-enumerator
-        - nut-server
+    - name: Update installed NUT services
+      ansible.builtin.include_tasks: get_installed_nut_services.yml
+
+    - name: Delete services
+      ansible.builtin.include_tasks: delete_service.yml
+      loop: "{{ nut_services_installed | rejectattr('status', 'equalto', 'masked') | map(attribute='name') | list }}"
+      loop_control:
+        loop_var: service_name
+      when: nut_state == 'absent'
+            and service_name != 'nut-driver@.service'
+
