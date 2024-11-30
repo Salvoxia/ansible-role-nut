@@ -24,6 +24,7 @@
       notify:
         - Systemctl daemon-reload
       when: item.name != 'nut-driver@.service'
+            and item.status not in ['not-found', 'failed']
       loop: "{{ nut_services_existing }}"
 
 - name: Uninstall NUT from source
