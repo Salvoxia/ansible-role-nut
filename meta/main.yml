@@ -2,18 +2,23 @@
 galaxy_info:
   author: salvoxia
   role_name: nut
-  description: Network UPS Tools (nut) for Debian.
+  description: Network UPS Tools (nut) for Debian and Ubuntu, with advanced user configuration and possibility to compile from source.
   issue_tracker_url: https://github.com/salvoxia/ansible-role-nut/issues
   license: MIT
   min_ansible_version: "2.5"
   platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
     - name: Debian
       versions:
-        - all
+        - bullseye
+        - bookworm
   galaxy_tags:
     - ups
     - battery
     - shutdown
     - hardware
+    - nut
 
 dependencies: []
