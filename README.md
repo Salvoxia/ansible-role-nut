@@ -1,6 +1,5 @@
 # Ansible Role: NUT
-
-[![Build Status](https://github.com/salvoxia/ansible-role-nut/workflows/Release/badge.svg)](https://github.com/Salvoxia/ansible-role-nut/actions/workflows/release.yml)
+[![Build Status](https://github.com/salvoxia/ansible-role-nut/workflows/CI/badge.svg)](https://github.com/Salvoxia/ansible-role-nut/actions/workflows/ci.yml)
 [![Ansible Galaxy Downloads](https://img.shields.io/badge/dynamic/json?color=blueviolet&label=Galaxy%20Downloads&query=%24.download_count&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F39518%2F%3Fformat%3Djson)](https://galaxy.ansible.com/ui/standalone/roles/salvoxia/nut/)
 
 Installs and configures [NUT](http://networkupstools.org/) (Nework UPS
@@ -21,6 +20,18 @@ Install dependencies with
 ```shell
 ansible-galaxy install -r requirements.yml
 ```
+
+__Compatibility:__  
+This role is tested with
+  - Debian 11 Bullseye
+  - Debian 12 Bookworm
+  - Ubuntu 22.04 LTS Jammy Jellyfish
+  - Ubuntu 24.04 LTS Noble Numbat
+
+By default, the role will check for a compatible operating system and version (any of the above). To disable that check, set the role variable `nut_verify_os` to `false`.  
+> [!CAUTION]  
+> When using this role on an unsupported operating system and installing NUT from source, the variable `__nut_apt_source` must be set to whatever URL to use in `sources.list` for a `deb-src` entry.
+
 ## Installing from Source
 
 By default the role will install NUT using the package manager. If the system's package manager comes with an older NUT package, it is possible to install NUT from source. The role will automatically install all build dependencies, check out the desired source version, compile and install NUT from source.  
@@ -452,6 +463,17 @@ Additional content to append to the `upsd.conf` file
 Additional content to append to the `upsmon.conf` file
     </td>
   </tr>
+  <tr>
+    <td> 
+      
+`nut_verify_os`
+    </td>
+    <td>
+
+Flag indicating whether to check for a known compatible operating system and version. Set to `false` to use the role on untested operating systems.<br>
+Default: `true`
+    </td>
+  </tr>
 </table>
 
 
@@ -459,6 +481,7 @@ Additional content to append to the `upsmon.conf` file
 
 ```yaml
 - hosts: all
+  gather_facts: true
   roles:
   - role: salvoxia.nut
     nut_users:

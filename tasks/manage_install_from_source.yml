@@ -58,7 +58,7 @@
 
     - name: Ensure debian source repository is added to sources.list
       ansible.builtin.apt_repository:
-        repo: deb-src http://deb.debian.org/debian {{ ansible_distribution_release }} main
+        repo: deb-src {{ __nut_apt_source }} {{ ansible_distribution_release }} main
         state: present
 
     - name: Create dependency package and install build dependencies
@@ -77,6 +77,16 @@
           template_path: "{{ role_path }}/templates/mk-build-deps_output.yml"
         set_fact: build_deps_kg
 
+    - name: Workaround for Debian Slim based containers
+      ansible.builtin.file:
+        path: /usr/share/man/man1
+        state: directory
+
+    - name: Workaround for Debian Slim based containers
+      ansible.builtin.file:
+        path: /usr/share/man/man2
+        state: directory
+
     - name: Install build dependencies
       ansible.builtin.package:
         deb: "{{ nut_dir.path }}/{{ build_deps_kg['build-deps-package'] }}"
@@ -88,8 +98,8 @@
   block:
     - name: Add drivers based one package name
       ansible.builtin.set_fact:
-        nut_drivers: "{{ nut_drivers | union(nut_packages_to_drivers | selectattr(item, 'defined') | map(attribute=item)) }}"
-      when: nut_packages_to_drivers | selectattr(item, 'defined') | list | count > 0
+        nut_drivers: "{{ nut_drivers | union(__nut_packages_to_drivers | selectattr(item, 'defined') | map(attribute=item)) }}"
+      when: __nut_packages_to_drivers | selectattr(item, 'defined') | list | count > 0
       with_items: "{{ nut_packages }}"
 
     - name: Add dummy-ups driver to nut-drivers for uninstall purposes

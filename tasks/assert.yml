@@ -1,4 +1,13 @@
 ---
+- name: Verify operating system
+  ansible.builtin.assert:
+    that:
+      - __nut_is_supported_os is defined
+      - __nut_is_supported_os
+      - ansible_facts['distribution_major_version'] in __nut_supported_os_versions
+    fail_msg: "{{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }} is not supoorted by this role! Try setting nut_verify_os to false!"
+  when: nut_verify_os
+
 - name: Verify nut_state
   ansible.builtin.assert:
     that: nut_state in ['present', 'absent']

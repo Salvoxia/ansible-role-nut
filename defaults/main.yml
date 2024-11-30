@@ -5,6 +5,10 @@ nut_enable_service: true
 # Indicates whether to install or remove NUT
 nut_state: present
 
+# Flag indicating whether to check for a known compatible operating system and version;
+# Set to false to run on untested OS
+nut_verify_os: true
+
 # Flag indicating whether to compile and install NUT from source instead of a package manager
 nut_install_from_source: false
 # Git source repository to use when installing NUT from source
