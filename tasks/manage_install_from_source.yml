@@ -81,11 +81,17 @@
       ansible.builtin.file:
         path: /usr/share/man/man1
         state: directory
+        owner: root
+        group: root
+        mode: '0755'
 
     - name: Workaround for Debian Slim based containers
       ansible.builtin.file:
         path: /usr/share/man/man2
         state: directory
+        owner: root
+        group: root
+        mode: '0755'
 
     - name: Install build dependencies
       ansible.builtin.package:
