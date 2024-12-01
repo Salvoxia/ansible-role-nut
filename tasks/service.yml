@@ -1,4 +1,8 @@
 ---
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
 - name: Get service facts
   ansible.builtin.service_facts:
   when: nut_services is defined
@@ -19,6 +23,7 @@
       ansible.builtin.service:
         name: "{{ item }}"
         state: started
+        masked: false
         enabled: true
       when: "nut_services is not undefined
             and ansible_facts.services[item] is defined

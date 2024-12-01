@@ -4,10 +4,9 @@
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
-  when: nut_installed_version is defined
+  when: nut_installed
 
 - name: Disable services
-  when: nut_installed_version is defined
   block:
     - name: Populate service facts
       ansible.builtin.service_facts:

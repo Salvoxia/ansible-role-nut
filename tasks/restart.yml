@@ -4,8 +4,8 @@
   when: nut_enable_service
 
 - name: "Restart nut."
-  ansible.builtin.service:
-    name: "{{ item }}"
-    state: restarted
-  with_items: "{{ nut_services_installed | map(attribute='name') | list | difference(['nut-driver.service', 'nut-driver@.service']) }}"
+  ansible.builtin.include_tasks: restart_service.yml
+  loop_control:
+    loop_var: service_name
+  loop: "{{ nut_services_installed | map(attribute='name') | list | difference(['nut-driver.service', 'nut-driver@.service']) }}"
   when: nut_enable_service

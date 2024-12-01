@@ -98,7 +98,7 @@
         deb: "{{ nut_dir.path }}/{{ build_deps_kg['build-deps-package'] }}"
 
 - name: Build list of NUT drivers
-  when: "'nut-server' in nut_packages and nut_reinstall
+  when: "nut_reinstall
         or (nut_state == 'present' and not nut_installed)
         or (nut_state == 'absent' and nut_installed)"
   block:
@@ -108,11 +108,11 @@
       when: __nut_packages_to_drivers | selectattr(item, 'defined') | list | count > 0
       with_items: "{{ nut_packages }}"
 
-    - name: Add dummy-ups driver to nut-drivers for uninstall purposes
+    - name: Add dummy-ups driver to nut-drivers for uninstall or client-only purposes
       ansible.builtin.set_fact:
         nut_drivers:
           - dummy-ups
-      when: nut_state == 'absent' and nut_drivers | length == 0
+      when: (nut_state == 'absent' or 'nut-server' not in nut_packages) and nut_drivers | length == 0
 
     - name: Verify at least one driver is selected
       ansible.builtin.assert:
@@ -162,9 +162,30 @@
 - name: Define NUT services to enable
   ansible.builtin.set_fact:
     nut_services:
-      - nut-client.service
+      - nut-monitor.service
 
 - name: Add NUT services for NUT server
   ansible.builtin.set_fact:
     nut_services: "{{ nut_services + ['nut-server.service', 'nut-driver.service'] }}"
   when: "'nut-server' in nut_packages"
+
+- name: Disable non-monitor services
+  when: nut_state == 'present' and 'nut-server' not in nut_packages
+  block:
+    - name: Systemctl daemon-reload
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Get installed NUT services
+      ansible.builtin.include_tasks: get_installed_nut_services.yml
+
+    - name: Stop and mask services
+      ansible.builtin.service:
+        state: stopped
+        enabled: false
+        masked: true
+        name: "{{ item }}"
+      notify:
+        - Systemctl daemon-reload
+      when: item != 'nut-driver@.service'
+      loop: "{{ nut_services_installed | rejectattr('name', 'equalto', 'nut-monitor.service') | rejectattr('status', 'equalto', 'masked') | map(attribute='name') | list }}"
