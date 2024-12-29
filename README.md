@@ -1,6 +1,8 @@
 # Ansible Role: NUT
-[![Build Status](https://github.com/salvoxia/ansible-role-nut/workflows/CI/badge.svg)](https://github.com/Salvoxia/ansible-role-nut/actions/workflows/ci.yml)
-[![Ansible Galaxy Downloads](https://img.shields.io/badge/dynamic/json?color=blueviolet&label=Galaxy%20Downloads&query=%24.download_count&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F39518%2F%3Fformat%3Djson)](https://galaxy.ansible.com/ui/standalone/roles/salvoxia/nut/)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/salvoxia/ansible-role-nut/ci.yml?label=molecule&logo=ansible&style=flat-square)](https://github.com/Salvoxia/ansible-role-nut/actions/workflows/ci.yml)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/salvoxia/ansible-role-nut?color=EE0000&label=release&logo=ansible&style=flat-square)](https://galaxy.ansible.com/ui/standalone/roles/salvoxia/nut/)
+[![Ansible Galaxy Downloads](https://img.shields.io/badge/dynamic/json?color=blueviolet&label=Galaxy%20Downloads&logo=ansible&style=flat-square&query=%24.download_count&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F39518%2F%3Fformat%3Djson)](https://galaxy.ansible.com/ui/standalone/roles/salvoxia/nut/)
+[![MIT LIcense](https://img.shields.io/github/license/salvoxia/ansible-role-nut?style=flat-square)](https://github.com/Salvoxia/ansible-role-nut/blob/main/LICENSE)
 
 Installs and configures [NUT](http://networkupstools.org/) (Nework UPS
 tools) on Debian based systems, while allowing for advanced NUT user configuration.  
