@@ -117,7 +117,8 @@
     - name: Verify at least one driver is selected
       ansible.builtin.assert:
         that: nut_drivers | count > 0
-        fail_msg: At least one NUT driver must be selected either directly by specifying it in nut_drivers or indirectly by adding a driver package to nut_packages if nut-server is selected for installation!
+        fail_msg: "At least one NUT driver must be selected either directly by specifying it in nut_drivers or
+                  indirectly by adding a driver package to nut_packages if nut-server is selected for installation!"
 
     - name: Create --with-drivers configure argument
       ansible.builtin.set_fact:
