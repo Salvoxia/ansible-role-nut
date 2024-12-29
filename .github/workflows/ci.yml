@@ -11,7 +11,6 @@ name: CI
     - cron: "16 3 * * 0"
 
 jobs:
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -34,7 +33,19 @@ jobs:
         run: ansible-lint
 
   molecule:
+    name: Molecule Tests
+    needs: lint
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - debian11
+          - debian12
+          - ubuntu2204
+          - ubuntu2404
+        ansible_core_version:
+          - latest
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v4
@@ -55,3 +66,4 @@ jobs:
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_IMAGE: "${{ matrix.distro }}"
