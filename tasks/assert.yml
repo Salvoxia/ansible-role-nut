@@ -70,3 +70,11 @@
           - item.monitoruser in nut_user_names
         fail_msg: "UPS {{ item.name }} references non-existing monitoruser {{ item.monitoruser }}! Defined users: {{ nut_user_names }}"
       with_items: "{{ nut_ups }}"
+
+    - name: Assert nut_upsmon_notifycmd is set if nut_upsmon_notifycmd_content is used
+      ansible.builtin.assert:
+        that:
+          - nut_upsmon_notifycmd is defined
+          - nut_upsmon_notifycmd | length > 0
+        fail_msg: "nut_upsmon_notifycmd must be defined and set to a path if nut_upsmon_notifycmd_content is set!"
+      when: "nut_upsmon_notifycmd_content is defined and nut_upsmon_notifycmd_content | length > 0"
