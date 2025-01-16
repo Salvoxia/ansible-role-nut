@@ -25,10 +25,26 @@
         state: started
         masked: false
         enabled: true
-      when: "nut_services is not undefined
-            and ansible_facts.services[item] is defined
-            and ansible_facts.services[item].status != 'running'"
+      when: 
+        - nut_services is not undefined
+        - ansible_facts.services[item] is defined
+        - ansible_facts.services[item].status != 'running'
       loop: "{{ nut_services }}"
+
+    - name: Enable nut.target
+      ansible.builtin.service:
+        name: "nut.target"
+        state: started
+        masked: false
+        enabled: true
+
+    - name: Enable nut-driver.target
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        masked: false
+        enabled: true
+      when: "'nut_server' in nut_services"
 
 - name: Disable and remove NUT services service
   when: nut_state == "absent" or not nut_enable_service
