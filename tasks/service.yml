@@ -25,7 +25,7 @@
         state: started
         masked: false
         enabled: true
-      when: 
+      when:
         - nut_services is not undefined
         - ansible_facts.services[item] is defined
         - ansible_facts.services[item].status != 'running'
