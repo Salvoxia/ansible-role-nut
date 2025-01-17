@@ -5,9 +5,9 @@ name: Release
     tags:
       - '*'
 
-defaults:
-  run:
-    working-directory: 'salvoxia.nut'
+concurrency:
+  group: ${{ github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   lint:
