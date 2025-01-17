@@ -1,5 +1,5 @@
 ---
-- name: Converge
+- name: Verify
   hosts: all
   gather_facts: true
   tasks:
@@ -13,19 +13,36 @@
       ansible.builtin.command:
         argv:
           - upscmd
-          - -a monitor
+          - -u monitor
           - -p changeme
           - dummy_ups
           - load.off
+      ignore_errors: true
+      register: upscmd_result
+
+    - name: Assert upscmd for monitor user was denied
+      ansible.builtin.assert:
+        that: 
+          - upscmd_result.rc == 1
+          - "'ACCESS-DENIED' in upscmd_result.stderr"
 
     - name: Perform command on dummy_ups2 with monitor user
       ansible.builtin.command:
         argv:
           - upscmd
-          - -a monitor
+          - -u monitor
           - -p changeme
           - dummy_ups2
           - load.off
+      ignore_errors: true
+      register: upscmd_result
+
+    - name: Assert upscmd for monitor user was denied
+      ansible.builtin.assert:
+        that: 
+          - upscmd_result.rc == 1
+          - "'ACCESS-DENIED' in upscmd_result.stderr"
+
     - name: Verify communication with dummy_ups2
       ansible.builtin.command:
         argv:
@@ -36,7 +53,7 @@
       ansible.builtin.command:
         argv:
           - upscmd
-          - -a second_user
+          - -u second_user
           - -p insecure_password
           - dummy_ups
           - load.off
@@ -45,7 +62,7 @@
       ansible.builtin.command:
         argv:
           - upscmd
-          - -a second_user
+          - -u second_user
           - -p insecure_password
           - dummy_ups2
           - load.off

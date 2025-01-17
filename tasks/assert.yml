@@ -56,8 +56,8 @@
           - item.name is defined and item.name | length > 0
           - item.password is defined and item.password | length > 0
           - item.role is defined
-          - item.role in ['primary', 'secondary']
-        fail_msg: "All users must have a non-empty name and password attribute, and role must be either primary or secondary!"
+          - item.role in ['primary', 'secondary', 'master', 'slave']
+        fail_msg: "All users must have a non-empty name and password attribute, and role must be either primary/master or secondary/slave!"
       with_items: "{{ nut_users }}"
 
     - name: Build list of user names

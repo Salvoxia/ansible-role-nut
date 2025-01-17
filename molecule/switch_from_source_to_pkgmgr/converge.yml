@@ -23,10 +23,12 @@
       nut_users:
         - name: monitor
           password: changeme
-          role: secondary
+          role: slave
         - name: second_user
           password: insecure_password
-          role: primary
+          role: master
+          instcmds:
+           - all
       nut_ups:
         - name: dummy_ups
           monitoruser: monitor
