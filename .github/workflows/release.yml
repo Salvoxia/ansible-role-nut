@@ -48,8 +48,6 @@ jobs:
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v4
-        with:
-          path: 'salvoxia.nut'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5
