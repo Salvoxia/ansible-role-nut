@@ -1,7 +1,23 @@
 ---
-- name: Converge
+- name: Prepare
   hosts: all
   gather_facts: true
+  pre_tasks:
+    - name: Create NUT configuration folder.
+      ansible.builtin.file:
+        path: "/etc/nut"
+        state: directory
+        mode: '0755'
+    - name: Copy dummy-ups.dev file
+      ansible.builtin.copy:
+        src: "../dummy-ups.dev"
+        dest: "/etc/nut/dummy-ups.dev"
+        mode: '0755'
+    - name: Copy dummy-ups2.dev file
+      ansible.builtin.copy:
+        src: "../dummy-ups2.dev"
+        dest: "/etc/nut/dummy-ups2.dev"
+        mode: '0755'
   roles:
     - role: salvoxia.nut
       nut_install_from_source: false

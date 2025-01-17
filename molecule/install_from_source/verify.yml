@@ -13,7 +13,7 @@
       ansible.builtin.command:
         argv:
           - upscmd
-          - -a monitor
+          - -u monitor
           - -p changeme
           - dummy_ups
           - load.off

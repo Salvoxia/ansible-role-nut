@@ -23,6 +23,8 @@
         - name: monitor
           password: changeme
           role: secondary
+          instcmds:
+            - all
       nut_ups:
         - name: dummy_ups
           monitoruser: monitor

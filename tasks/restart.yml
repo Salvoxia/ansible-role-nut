@@ -7,5 +7,5 @@
   ansible.builtin.include_tasks: restart_service.yml
   loop_control:
     loop_var: service_name
-  loop: "{{ nut_services_installed | map(attribute='name') | list | difference(['nut-driver.service', 'nut-driver@.service']) }}"
+  loop: "{{ nut_services_installed | map(attribute='name') | list | difference(['nut-driver@.service']) }}"
   when: nut_enable_service

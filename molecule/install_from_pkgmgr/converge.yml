@@ -27,6 +27,8 @@
         - name: second_user
           password: insecure_password
           role: primary
+          instcmds:
+            - all
       nut_ups:
         - name: dummy_ups
           monitoruser: monitor
