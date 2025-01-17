@@ -28,7 +28,7 @@
           password: insecure_password
           role: master
           instcmds:
-           - all
+            - all
       nut_ups:
         - name: dummy_ups
           monitoruser: monitor

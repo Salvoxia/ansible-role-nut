@@ -22,7 +22,7 @@
 
     - name: Assert upscmd for monitor user was denied
       ansible.builtin.assert:
-        that: 
+        that:
           - upscmd_result.rc == 1
           - "'ACCESS-DENIED' in upscmd_result.stderr"
 
@@ -39,7 +39,7 @@
 
     - name: Assert upscmd for monitor user was denied
       ansible.builtin.assert:
-        that: 
+        that:
           - upscmd_result.rc == 1
           - "'ACCESS-DENIED' in upscmd_result.stderr"
 
