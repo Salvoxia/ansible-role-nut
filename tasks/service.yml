@@ -43,9 +43,9 @@
         state: started
         masked: false
         enabled: true
-      when: 
+      when:
         - nut_target_check.rc == 0
-    
+
     - name: Check for nut-driver.target
       ansible.builtin.command: "systemctl list-unit-files nut-driver.target" # noqa: command-instead-of-module
       register: nut_driver_target_check
