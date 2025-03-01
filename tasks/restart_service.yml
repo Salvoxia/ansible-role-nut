@@ -9,6 +9,6 @@
     name: "{{ service_name }}"
     state: restarted
     enabled: true
-  when: 
+  when:
     - service_status.status['LoadState'] != 'not-found'
     - service_status.status['LoadState'] != 'masked'
