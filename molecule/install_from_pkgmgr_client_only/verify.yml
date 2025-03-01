@@ -11,7 +11,7 @@
         that:
           - ansible_facts.services['nut-monitor.service'] is defined
           - ansible_facts.services['nut-monitor.service'].state == 'running'
-          - ansible_facts.services['nut-server.service'] is not defined 
+          - ansible_facts.services['nut-server.service'] is not defined
             or ansible_facts.services['nut-server.service'].status == 'not-found'
 
     - name: Gather package facts
