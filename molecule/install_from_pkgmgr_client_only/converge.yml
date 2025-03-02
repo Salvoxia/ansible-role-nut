@@ -4,8 +4,6 @@
   gather_facts: true
   roles:
     - role: salvoxia.nut
-      nut_install_from_source: true
-      nut_source_tag: v2.8.2
       nut_packages:
         - nut-client
       nut_users:
