@@ -1,13 +1,13 @@
 # This task assumes it is only called if nut_install_from_source is true!
 # It does not include this check again!
-# For nut_state == present it performs the following actions
+# For __nut_state == present it performs the following actions
 # - remove NUT if installed via package manager
 # - check if NUT is already installed and determine version
 # - if the wrong version is installed, it will uninstall it from source
 # - install the desired version from source
 # - install and enable the desired services#
 #
-# For nut_state == absent it performs the following actions
+# For __nut_state == absent it performs the following actions
 # - remove NUT if installed via package manager
 # - check if NUT is already installed and determine version
 # - remove NUT from source if installed
@@ -24,22 +24,22 @@
   ansible.builtin.include_tasks: uninstall.yml
   when: ansible_facts.packages['nut-client'] is defined
 
-- name: Initialize nut_reinstall to false
+- name: Initialize __nut_reinstall to false
   ansible.builtin.set_fact:
-    nut_reinstall: false
+    __nut_reinstall: false
 
 - name: Get installed NUT version
   ansible.builtin.include_tasks: get_installed_nut_version.yml
 
-- name: Set nut_reinstall to true if desired version not installed
+- name: Set __nut_reinstall to true if desired version not installed
   ansible.builtin.set_fact:
-    nut_reinstall: true
+    __nut_reinstall: true
   when: nut_installed and nut_installed_version is defined and nut_installed_version != nut_source_tag
 
 - name: Install build dependencies
-  when: "nut_reinstall
-        or (nut_state == 'present' and not nut_installed)
-        or (nut_state == 'absent' and nut_installed)"
+  when: "__nut_reinstall
+        or (__nut_state == 'present' and not nut_installed)
+        or (__nut_state == 'absent' and nut_installed)"
   block:
     - name: Install mk-build-deps
       ansible.builtin.package:
@@ -98,9 +98,9 @@
         deb: "{{ nut_dir.path }}/{{ build_deps_kg['build-deps-package'] }}"
 
 - name: Build list of NUT drivers
-  when: "nut_reinstall
-        or (nut_state == 'present' and not nut_installed)
-        or (nut_state == 'absent' and nut_installed)"
+  when: "__nut_reinstall
+        or (__nut_state == 'present' and not nut_installed)
+        or (__nut_state == 'absent' and nut_installed)"
   block:
     - name: Add drivers based one package name
       ansible.builtin.set_fact:
@@ -112,7 +112,7 @@
       ansible.builtin.set_fact:
         nut_drivers:
           - dummy-ups
-      when: (nut_state == 'absent' or 'nut-server' not in nut_packages) and nut_drivers | length == 0
+      when: (__nut_state == 'absent' or 'nut-server' not in nut_packages) and nut_drivers | length == 0
 
     - name: Verify at least one driver is selected
       ansible.builtin.assert:
@@ -124,41 +124,34 @@
       ansible.builtin.set_fact:
         nut_configure_with_drivers: "--with-drivers={{ nut_drivers | flatten | unique | join(',') }}"
 
-- name: Uninstall old NUT version
-  when: nut_reinstall or (nut_state == 'absent' and nut_installed)
-  block:
-    - name: Set uninstall variables
-      ansible.builtin.set_fact:
-        nut_source_install_dir: "{{ nut_dir }}"
-        nut_source_install_state: absent
-        nut_source_install_tag: "{{ nut_installed_version }}"
-        nut_source_install_repository: "{{ nut_source_repository }}"
 
-    - name: Uninstall NUT from source
-      ansible.builtin.include_tasks: compile_and_install_or_uninstall_from_source.yml
+- name: Uninstall NUT from source
+  ansible.builtin.include_tasks: compile_and_install_or_uninstall_from_source.yml
+  vars:
+    nut_source_install_dir: "{{ nut_dir }}"
+    nut_source_install_state: absent
+    nut_source_install_tag: "{{ nut_installed_version }}"
+    nut_source_install_repository: "{{ nut_source_repository }}"
+  when: __nut_reinstall or (__nut_state == 'absent' and nut_installed)
 
-- name: Install desired NUT version
-  when: nut_reinstall or (nut_state == 'present' and not nut_installed)
-  block:
-    - name: Set uninstall variables
-      ansible.builtin.set_fact:
-        nut_source_install_dir: "{{ nut_dir }}"
-        nut_source_install_state: present
-        nut_source_install_tag: "{{ nut_source_tag }}"
-        nut_source_install_repository: "{{ nut_source_repository }}"
-
-    - name: Install NUT from source
-      ansible.builtin.include_tasks: compile_and_install_or_uninstall_from_source.yml
+- name: Install NUT from source
+  ansible.builtin.include_tasks: compile_and_install_or_uninstall_from_source.yml
+  vars:
+    nut_source_install_dir: "{{ nut_dir }}"
+    nut_source_install_state: present
+    nut_source_install_tag: "{{ nut_source_tag }}"
+    nut_source_install_repository: "{{ nut_source_repository }}"
+  when: __nut_reinstall or (__nut_state == 'present' and not nut_installed)
 
 - name: Configure NUT
   ansible.builtin.include_tasks: configure.yml
-  when: nut_state == 'present' and nut_managed_config
+  when: __nut_state == 'present' and nut_managed_config
 
 - name: Uninstall build dependencies
   ansible.builtin.package:
     name: nut-build-deps
     state: absent
-  when: nut_state == 'absent'
+  when: __nut_state == 'absent'
 
 - name: Define NUT services to enable
   ansible.builtin.set_fact:
@@ -171,7 +164,7 @@
   when: "'nut-server' in nut_packages"
 
 - name: Disable non-monitor services
-  when: nut_state == 'present' and 'nut-server' not in nut_packages
+  when: __nut_state == 'present' and 'nut-server' not in nut_packages
   block:
     - name: Systemctl daemon-reload
       ansible.builtin.systemd:
