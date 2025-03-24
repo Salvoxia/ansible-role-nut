@@ -5,8 +5,6 @@ name: CI
   push:
     paths-ignore:
       - 'README.md'
-    branches:
-      - main
   schedule:
     - cron: "16 3 * * 0"
 
