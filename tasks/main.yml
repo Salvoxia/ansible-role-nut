@@ -16,6 +16,8 @@
 
 - name: Install or uninstall NUT from source
   ansible.builtin.include_tasks: manage_install_from_source.yml
+  vars:
+    __nut_state: "{{ nut_state }}"
   when: nut_state == 'present' and nut_install_from_source
 
 - name: Configure NUT services

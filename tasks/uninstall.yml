@@ -30,15 +30,10 @@
       loop: "{{ nut_services_existing }}"
 
 - name: Uninstall NUT from source
+  ansible.builtin.include_tasks: manage_install_from_source.yml
+  vars:
+    __nut_state: absent
   when: "nut_installed_version is defined and ansible_facts.packages['nut-client'] is not defined"
-  block:
-    - name: Set uninstall variables
-      ansible.builtin.set_fact:
-        nut_state: absent
-        nut_install_from_source: true
-
-    - name: Uninstall NUT from source
-      ansible.builtin.include_tasks: manage_install_from_source.yml
 
 - name: Remove NUT via package manager
   when: "nut_installed_version is defined and ansible_facts.packages['nut-client'] is defined"
