@@ -4,10 +4,11 @@ __nut_packages:
   - nut-server
 __nut_is_supported_os: true
 __nut_supported_os_versions:
-  - '11'
-  - '12'
   - '13'
 __nut_apt_source: 'http://deb.debian.org/debian'
+
+nut_source_systemd_systemunitdir: "/usr/lib/systemd/system"
+nut_source_systemd_shutdowndir: "/usr/lib/systemd/system-shutdown"
 
 __nut_packages_to_drivers:
   - nut-i2c:
