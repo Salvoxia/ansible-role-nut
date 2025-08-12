@@ -20,7 +20,7 @@
       ignore_errors: true
       register: upscmd_result
 
-    - name: Assert upscmd for monitor user was denied
+    - name: Assert upscmd for monitor user on dummy_ups was denied
       ansible.builtin.assert:
         that:
           - upscmd_result.rc == 1
@@ -37,7 +37,7 @@
       ignore_errors: true
       register: upscmd_result
 
-    - name: Assert upscmd for monitor user was denied
+    - name: Assert upscmd for monitor user on dummy_ups2 was denied
       ansible.builtin.assert:
         that:
           - upscmd_result.rc == 1

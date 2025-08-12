@@ -52,7 +52,7 @@
           --with-drvpath=/lib/nut --with-pidpath=/var/run/nut
           --datadir=/usr/share/nut
           --with-user=nut --with-group=nut --with-udev-dir=/lib/udev
-          --with-systemdsystemunitdir=yes --with-systemdshutdowndir --with-docs=no
+          --with-systemdsystemunitdir={{ nut_source_systemd_systemunitdir }} --with-systemdshutdowndir={{ nut_source_systemd_shutdowndir }} --with-docs=no
       changed_when: true
 
 - name: Install NUT from source
@@ -61,6 +61,17 @@
     - name: Make NUT
       community.general.make:
         chdir: "{{ nut_source_install_dir.path }}/nut"
+
+    - name: Make sure systemd shutdown folder exists
+      ansible.builtin.file:
+        path: "{{ nut_source_systemd_shutdowndir }}"
+        owner: root
+        group: root
+        mode: '0755'
+        state: directory
+      when:
+        - "nut_mode in ['netserver', 'standalone']"
+        - nut_source_systemd_shutdowndir != "auto"
 
     - name: Install NUT
       community.general.make:
