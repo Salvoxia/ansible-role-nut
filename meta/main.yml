@@ -10,10 +10,12 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - jammy
+        - noble
     - name: Debian
       versions:
         - bullseye
         - bookworm
+        - trixie
   galaxy_tags:
     - ups
     - battery
