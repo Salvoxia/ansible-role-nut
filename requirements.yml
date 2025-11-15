@@ -1,3 +1,5 @@
 ---
 collections:
   - name: ansible.utils
+  - name: ansible.netcommon
+  - name: community.general
